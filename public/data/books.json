@@ -1,5 +1,5 @@
 {
- "note": "Demo catalogue. Prices are example values. Fiction: public domain (authors died more than 70 years ago). Textbooks: OpenStax, CC BY 4.0, access for free at openstax.org; course codes are examples.",
+ "note": "Demo catalogue. Prices are example values. Fiction: public domain (authors died more than 70 years ago). Textbooks: OpenStax, CC BY 4.0, access for free at openstax.org; course codes are examples. Covers for classics: Standard Ebooks (CC0), standardebooks.org. Campus essentials photos: AI-generated (Higgsfield) for this demo; prices are examples.",
  "genres": [
   {
    "id": "myst",
@@ -40,6 +40,11 @@
    "id": "text",
    "name": "Course textbooks",
    "line": "Free OpenStax e-books. Printed copies at cost."
+  },
+  {
+   "id": "essentials",
+   "name": "Campus essentials",
+   "line": "Stationery, calculators and bags for the semester."
   }
  ],
  "popular": [
@@ -66,7 +71,9 @@
    "stock": 3,
    "source": "pd",
    "blurb": "Sherlock Holmes and Dr Watson look into the legend of a ghostly hound on the moors after Sir Charles Baskerville is found dead.",
-   "rank": 0
+   "rank": 0,
+   "cover": "/img/covers/hound.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/arthur-conan-doyle/the-hound-of-the-baskervilles"
   },
   {
    "id": "scarlet",
@@ -79,7 +86,9 @@
    "stock": 6,
    "source": "pd",
    "blurb": "The first Sherlock Holmes story: how Holmes and Watson met, and the murder in Brixton that brought them together.",
-   "rank": 1
+   "rank": 1,
+   "cover": "/img/covers/scarlet.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/arthur-conan-doyle/a-study-in-scarlet"
   },
   {
    "id": "sign-four",
@@ -92,7 +101,9 @@
    "stock": 4,
    "source": "pd",
    "blurb": "A missing father, a yearly pearl and a stolen treasure send Holmes and Watson racing down the Thames.",
-   "rank": 2
+   "rank": 2,
+   "cover": "/img/covers/sign-four.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/arthur-conan-doyle/the-sign-of-the-four"
   },
   {
    "id": "moonstone",
@@ -105,7 +116,9 @@
    "stock": 5,
    "source": "pd",
    "blurb": "A sacred diamond disappears from a country house, and each witness tells their part of the story.",
-   "rank": 3
+   "rank": 3,
+   "cover": "/img/covers/moonstone.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/wilkie-collins/the-moonstone"
   },
   {
    "id": "woman-white",
@@ -118,7 +131,9 @@
    "stock": 2,
    "source": "pd",
    "blurb": "A drawing teacher meets a mysterious woman in white on a moonlit road, and is pulled into a plot of stolen identity.",
-   "rank": 4
+   "rank": 4,
+   "cover": "/img/covers/woman-white.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/wilkie-collins/the-woman-in-white"
   },
   {
    "id": "father-brown",
@@ -131,7 +146,9 @@
    "stock": 5,
    "source": "pd",
    "blurb": "A quiet, round-faced priest solves crimes by understanding the people who commit them.",
-   "rank": 5
+   "rank": 5,
+   "cover": "/img/covers/father-brown.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/g-k-chesterton/the-innocence-of-father-brown"
   },
   {
    "id": "thirty-nine",
@@ -144,7 +161,9 @@
    "stock": 0,
    "source": "pd",
    "blurb": "Richard Hannay finds a dead man in his flat and goes on the run across Scotland with a secret notebook.",
-   "rank": 6
+   "rank": 6,
+   "cover": "/img/covers/thirty-nine.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/john-buchan/the-thirty-nine-steps"
   },
   {
    "id": "dracula",
@@ -157,7 +176,9 @@
    "stock": 6,
    "source": "pd",
    "blurb": "Told through letters and diaries: a young lawyer's trip to Transylvania, and the count who follows him back to England.",
-   "rank": 7
+   "rank": 7,
+   "cover": "/img/covers/dracula.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/bram-stoker/dracula"
   },
   {
    "id": "frankenstein",
@@ -170,7 +191,9 @@
    "stock": 3,
    "source": "pd",
    "blurb": "Victor Frankenstein builds a living being, then runs from what he has made.",
-   "rank": 8
+   "rank": 8,
+   "cover": "/img/covers/frankenstein.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/mary-shelley/frankenstein"
   },
   {
    "id": "jekyll",
@@ -183,7 +206,9 @@
    "stock": 7,
    "source": "pd",
    "blurb": "A respected doctor, a violent stranger and a lawyer determined to find out how they are connected.",
-   "rank": 9
+   "rank": 9,
+   "cover": "/img/covers/jekyll.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/robert-louis-stevenson/the-strange-case-of-dr-jekyll-and-mr-hyde"
   },
   {
    "id": "carmilla",
@@ -209,7 +234,9 @@
    "stock": 2,
    "source": "pd",
    "blurb": "A governess at a remote country house becomes sure that two ghosts are after the children in her care.",
-   "rank": 11
+   "rank": 11,
+   "cover": "/img/covers/turn-screw.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/henry-james/the-turn-of-the-screw"
   },
   {
    "id": "hamlet",
@@ -222,7 +249,9 @@
    "stock": 8,
    "source": "pd",
    "blurb": "A prince, a murdered father and a court full of spies: Shakespeare's longest play.",
-   "rank": 12
+   "rank": 12,
+   "cover": "/img/covers/hamlet.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/william-shakespeare/hamlet"
   },
   {
    "id": "macbeth",
@@ -235,7 +264,9 @@
    "stock": 6,
    "source": "pd",
    "blurb": "Three witches, one prophecy, and a general who will do anything to make it come true.",
-   "rank": 13
+   "rank": 13,
+   "cover": "/img/covers/macbeth.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/william-shakespeare/macbeth"
   },
   {
    "id": "dolls-house",
@@ -247,8 +278,10 @@
    "saving": 5,
    "stock": 3,
    "source": "pd",
-   "blurb": "Nora seems to have the perfect home, until a secret loan threatens to expose everything. Translated by William Archer.",
-   "rank": 14
+   "blurb": "Nora seems to have the perfect home, until a secret loan threatens to expose everything. Translated by R. Farquharson Sharp.",
+   "rank": 14,
+   "cover": "/img/covers/dolls-house.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/henrik-ibsen/a-dolls-house/r-farquharson-sharp"
   },
   {
    "id": "earnest",
@@ -261,7 +294,9 @@
    "stock": 5,
    "source": "pd",
    "blurb": "Two young men invent other identities to escape their duties, and both fall for women who only love the name Ernest.",
-   "rank": 15
+   "rank": 15,
+   "cover": "/img/covers/earnest.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/oscar-wilde/the-importance-of-being-earnest"
   },
   {
    "id": "pygmalion",
@@ -274,7 +309,9 @@
    "stock": 4,
    "source": "pd",
    "blurb": "A phonetics professor bets he can pass off a flower seller as a duchess by changing the way she speaks.",
-   "rank": 16
+   "rank": 16,
+   "cover": "/img/covers/pygmalion.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/george-bernard-shaw/pygmalion"
   },
   {
    "id": "pride",
@@ -287,7 +324,9 @@
    "stock": 6,
    "source": "pd",
    "blurb": "Elizabeth Bennet and Mr Darcy get each other completely wrong, and then have to admit it.",
-   "rank": 17
+   "rank": 17,
+   "cover": "/img/covers/pride.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/jane-austen/pride-and-prejudice"
   },
   {
    "id": "persuasion",
@@ -300,7 +339,9 @@
    "stock": 4,
    "source": "pd",
    "blurb": "Eight years after being talked out of marrying him, Anne Elliot meets Captain Wentworth again.",
-   "rank": 18
+   "rank": 18,
+   "cover": "/img/covers/persuasion.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/jane-austen/persuasion"
   },
   {
    "id": "jane-eyre",
@@ -313,7 +354,9 @@
    "stock": 3,
    "source": "pd",
    "blurb": "An orphan becomes a governess at Thornfield Hall and falls for its moody owner, who is hiding something upstairs.",
-   "rank": 19
+   "rank": 19,
+   "cover": "/img/covers/jane-eyre.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/charlotte-bronte/jane-eyre"
   },
   {
    "id": "wuthering",
@@ -326,7 +369,9 @@
    "stock": 5,
    "source": "pd",
    "blurb": "The wild, destructive love between Catherine Earnshaw and Heathcliff, and what it does to two families.",
-   "rank": 20
+   "rank": 20,
+   "cover": "/img/covers/wuthering.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/emily-bronte/wuthering-heights"
   },
   {
    "id": "north-south",
@@ -339,7 +384,9 @@
    "stock": 2,
    "source": "pd",
    "blurb": "A minister's daughter moves to an industrial northern town and clashes with a proud mill owner.",
-   "rank": 21
+   "rank": 21,
+   "cover": "/img/covers/north-south.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/elizabeth-gaskell/north-and-south"
   },
   {
    "id": "treasure",
@@ -352,7 +399,9 @@
    "stock": 7,
    "source": "pd",
    "blurb": "A map, a ship and a one-legged cook: young Jim Hawkins sets sail for buried treasure.",
-   "rank": 22
+   "rank": 22,
+   "cover": "/img/covers/treasure.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/robert-louis-stevenson/treasure-island"
   },
   {
    "id": "kidnapped",
@@ -365,7 +414,9 @@
    "stock": 4,
    "source": "pd",
    "blurb": "Cheated of his inheritance and sold onto a ship, David Balfour escapes into the Scottish Highlands.",
-   "rank": 23
+   "rank": 23,
+   "cover": "/img/covers/kidnapped.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/robert-louis-stevenson/kidnapped"
   },
   {
    "id": "king-solomon",
@@ -378,7 +429,9 @@
    "stock": 3,
    "source": "pd",
    "blurb": "Allan Quatermain leads an expedition in search of a lost explorer and a legendary mine.",
-   "rank": 24
+   "rank": 24,
+   "cover": "/img/covers/king-solomon.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/h-rider-haggard/king-solomons-mines"
   },
   {
    "id": "monte-cristo",
@@ -391,7 +444,9 @@
    "stock": 2,
    "source": "pd",
    "blurb": "Wrongly imprisoned for fourteen years, Edmond Dantès escapes, finds a fortune and plans his revenge.",
-   "rank": 25
+   "rank": 25,
+   "cover": "/img/covers/monte-cristo.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/alexandre-dumas/the-count-of-monte-cristo/chapman-and-hall"
   },
   {
    "id": "eighty-days",
@@ -404,7 +459,9 @@
    "stock": 6,
    "source": "pd",
    "blurb": "Phileas Fogg bets his fortune that he can circle the globe in eighty days.",
-   "rank": 26
+   "rank": 26,
+   "cover": "/img/covers/eighty-days.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/jules-verne/around-the-world-in-eighty-days/george-makepeace-towle"
   },
   {
    "id": "time-machine",
@@ -417,7 +474,9 @@
    "stock": 5,
    "source": "pd",
    "blurb": "An inventor travels to the year 802,701 and finds that humanity has split in two.",
-   "rank": 27
+   "rank": 27,
+   "cover": "/img/covers/time-machine.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/h-g-wells/the-time-machine"
   },
   {
    "id": "war-worlds",
@@ -430,7 +489,9 @@
    "stock": 4,
    "source": "pd",
    "blurb": "Cylinders fall on the English countryside, and the Martians inside are not friendly.",
-   "rank": 28
+   "rank": 28,
+   "cover": "/img/covers/war-worlds.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/h-g-wells/the-war-of-the-worlds"
   },
   {
    "id": "invisible-man",
@@ -443,7 +504,9 @@
    "stock": 3,
    "source": "pd",
    "blurb": "A bandaged stranger arrives at a village inn. Underneath the bandages there is nothing at all.",
-   "rank": 29
+   "rank": 29,
+   "cover": "/img/covers/invisible-man.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/h-g-wells/the-invisible-man"
   },
   {
    "id": "journey-centre",
@@ -469,7 +532,9 @@
    "stock": 4,
    "source": "pd",
    "blurb": "Professor Challenger leads an expedition to a South American plateau where dinosaurs still live.",
-   "rank": 31
+   "rank": 31,
+   "cover": "/img/covers/lost-world.webp",
+   "sourceUrl": "https://standardebooks.org/ebooks/arthur-conan-doyle/the-lost-world"
   },
   {
    "id": "calculus-1",
@@ -621,5 +686,76 @@
    "blurb": "An introduction to how people think, feel, learn and behave.",
    "rank": 109
   }
- ]
+ ],
+ "essentials": [
+  {
+   "id": "calculator",
+   "name": "Everyday calculator",
+   "blurb": "Large display and big keys for quick sums in class and the lab.",
+   "price": 85,
+   "stock": 9,
+   "img": "/img/essentials/calculator.webp"
+  },
+  {
+   "id": "notebooks",
+   "name": "A4 exercise notebooks, pack of 3",
+   "blurb": "Ruled, navy covers, 80 pages each.",
+   "price": 45,
+   "stock": 30,
+   "img": "/img/essentials/notebooks.webp"
+  },
+  {
+   "id": "pens",
+   "name": "Ballpoint pens, pack of 6",
+   "blurb": "Blue, black and red. Smooth, quick-drying ink.",
+   "price": 20,
+   "stock": 40,
+   "img": "/img/essentials/pens.webp"
+  },
+  {
+   "id": "highlighters",
+   "name": "Highlighters, set of 5",
+   "blurb": "Five colours for colour-coding notes and past questions.",
+   "price": 25,
+   "stock": 22,
+   "img": "/img/essentials/highlighters.webp"
+  },
+  {
+   "id": "maths-set",
+   "name": "Mathematical set",
+   "blurb": "Compass, protractors, ruler, pencil and eraser for technical drawing and maths.",
+   "price": 30,
+   "stock": 15,
+   "img": "/img/essentials/maths-set.webp"
+  },
+  {
+   "id": "flash-drive",
+   "name": "USB flash drive, 32 GB",
+   "blurb": "For assignments, slides and backups. Cap included.",
+   "price": 60,
+   "stock": 12,
+   "img": "/img/essentials/flash-drive.webp"
+  },
+  {
+   "id": "backpack",
+   "name": "Student backpack",
+   "blurb": "Navy with gold zips. Fits a laptop, books and a water bottle.",
+   "price": 180,
+   "stock": 6,
+   "img": "/img/essentials/backpack.webp"
+  },
+  {
+   "id": "laptop-bag",
+   "name": "Padded laptop bag",
+   "blurb": "Fits most 15-inch laptops, with a front pocket for chargers.",
+   "price": 220,
+   "stock": 3,
+   "img": "/img/essentials/laptop-bag.webp"
+  }
+ ],
+ "deal": {
+  "percent": 10,
+  "who": "students",
+  "note": "One item each day. The deal changes at midnight (Accra time)."
+ }
 }

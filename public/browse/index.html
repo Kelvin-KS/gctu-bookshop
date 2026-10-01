@@ -23,19 +23,20 @@
     <nav aria-label="Genres"><div class="chips" id="cat-chips"></div></nav>
     <div class="catx">
       <form class="filters" id="filters" aria-label="Filters">
-        <fieldset><legend>Show prices for</legend>
+        <fieldset id="f-mode"><legend>Show prices for</legend>
           <label><input type="radio" name="mode" value="ebook" checked> E-book</label>
           <label><input type="radio" name="mode" value="hard"> Hard copy</label>
         </fieldset>
         <fieldset><legend>Availability</legend>
-          <label><input type="checkbox" id="f-stock"> Hard copy in stock</label>
-          <label><input type="checkbox" id="f-free"> Free e-books only</label>
+          <label><input type="checkbox" id="f-stock"> <span id="f-stock-t">Hard copy in stock</span></label>
+          <label id="f-free-l"><input type="checkbox" id="f-free"> Free e-books only</label>
         </fieldset>
-        <fieldset><legend>Where the books come from</legend>
+        <fieldset id="f-src"><legend>Where the books come from</legend>
           <p class="filter-note">Public-domain classics and OpenStax textbooks (CC BY 4.0). No copyrighted titles.</p>
         </fieldset>
       </form>
       <div>
+        <div id="cat-deal"></div>
         <div class="toolbar">
           <span id="cat-count" aria-live="polite"></span>
           <span class="tb-r">

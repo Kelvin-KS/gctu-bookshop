@@ -81,8 +81,9 @@
     w.appendChild(mark);
     var nav = el('nav', 'nav'); nav.setAttribute('aria-label', 'Main');
     var g = params.get('genre');
-    nav.appendChild(link('/browse/', 'Browse', page === 'browse' && g !== 'text'));
+    nav.appendChild(link('/browse/', 'Browse', page === 'browse' && g !== 'text' && g !== 'essentials'));
     nav.appendChild(link('/browse/?genre=text', 'Textbooks', page === 'browse' && g === 'text'));
+    nav.appendChild(link('/browse/?genre=essentials', 'Essentials', page === 'browse' && g === 'essentials'));
     nav.appendChild(link('/#genres', 'Genres'));
     w.appendChild(nav);
     var f = el('form', 'search-form'); f.action = '/search/'; f.setAttribute('role', 'search');
@@ -126,7 +127,7 @@
     var mw = el('span'); mw.appendChild(el('b', null, 'GCTU')); mw.appendChild(el('i', null, 'Bookshop')); m.appendChild(mw); brand.appendChild(m);
     brand.appendChild(el('p', null, 'E-books and hard copies for GCTU students and lecturers. Free pickup on campus, delivery across Ghana.'));
     grid.appendChild(brand);
-    [['Shop', [['/browse/', 'All books'], ['/#genres', 'Genres'], ['/browse/?genre=text', 'Course textbooks'], ['/search/', 'Search']]],
+    [['Shop', [['/browse/', 'All books'], ['/#genres', 'Genres'], ['/browse/?genre=text', 'Course textbooks'], ['/browse/?genre=essentials', 'Campus essentials']]],
      ['Help', [['', 'Track an order', 'buy'], ['/#delivery', 'Delivery & pickup'], ['', 'Message the librarian', 'request'], ['', 'Request a book', 'request']]],
      ['Account', [['', 'Sign in', 'account'], ['', 'My Library', 'account'], ['', 'Wishlist', 'account'], ['', 'Order history', 'account']]]
     ].forEach(function (col) {
@@ -144,7 +145,7 @@
     var c2 = el('div'); c2.appendChild(el('h2', null, 'Credits & licences'));
     var p2 = el('p'); p2.appendChild(document.createTextNode('Campus photos: “Bookshop (GCTU)”, “Student Study Area (GCTU)” and “Faculty of Computing & Information Studies (GCTU)” by Jwale2, Wikimedia Commons, '));
     var cc = el('a', null, 'CC BY-SA 4.0'); cc.href = 'https://creativecommons.org/licenses/by-sa/4.0/'; cc.rel = 'license noopener'; p2.appendChild(cc);
-    p2.appendChild(document.createTextNode(', colour-corrected (edited versions under the same licence). Fiction: public domain. Textbooks: OpenStax, CC BY 4.0, access for free at openstax.org. Covers are original designs. Fonts: Fraunces and DM Sans (SIL OFL).'));
+    p2.appendChild(document.createTextNode(', colour-corrected (edited versions under the same licence). Fiction: public domain. Textbooks: OpenStax, CC BY 4.0, access for free at openstax.org. Classic covers: Standard Ebooks (CC0); other covers are original designs. Campus essentials photos: AI-generated with Higgsfield for this demo. Fonts: Fraunces and DM Sans (SIL OFL).'));
     c2.appendChild(p2); cr.appendChild(c1); cr.appendChild(c2); w.appendChild(cr);
     var bottom = el('div', 'fbottom'); bottom.appendChild(el('span', null, 'Concept demo · not a real shop · no real orders or payments · not an official GCTU service'));
     var tt = el('button', 'totop'); tt.appendChild(el('span', 'up', '↑')); tt.appendChild(document.createTextNode(' Back to top'));
@@ -164,6 +165,11 @@
   // ---------- book pieces ----------
   var DATA = null, GENRES = {};
   function cover(b) {
+    if (b.cover) { // Standard Ebooks cover art (CC0)
+      var ci = el('div', 'cover has-img'); ci.setAttribute('aria-hidden', 'true');
+      var img = el('img'); img.src = b.cover; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async'; img.width = 350; img.height = 525;
+      ci.appendChild(img); return ci;
+    }
     var c = el('div', 'cover g-' + b.genre + (variant(b) ? ' v' + variant(b) : ''));
     c.appendChild(el('span', 'k', b.source === 'openstax' ? 'OpenStax · ' + b.course : GENRES[b.genre].name));
     var mid = el('div'); mid.appendChild(el('div', 'ttl', b.title)); mid.appendChild(el('div', 'rule')); mid.appendChild(el('div', 'au', b.author)); c.appendChild(mid);
@@ -212,6 +218,53 @@
     prev.addEventListener('click', function () { step(-1); }); next.addEventListener('click', function () { step(1); });
   }
 
+  // ---------- campus essentials + the daily student deal ----------
+  var DAY = 86400000;
+  function todaysDeal() { return DATA.essentials[Math.floor(Date.now() / DAY) % DATA.essentials.length]; }
+  function dealPrice(e) { return Math.round(e.price * (100 - DATA.deal.percent) / 100); }
+  function essCard(e) {
+    var deal = todaysDeal().id === e.id;
+    var a = el('article', 'ess rv' + (deal ? ' is-deal' : ''));
+    var ph = el('div', 'ess-ph'); var img = el('img'); img.src = e.img; img.alt = e.name; img.loading = 'lazy'; img.decoding = 'async'; img.width = 720; img.height = 720; ph.appendChild(img);
+    if (deal) ph.appendChild(el('span', 'deal-tag', 'Today’s student deal'));
+    a.appendChild(ph);
+    var m = el('div', 'meta'); m.appendChild(el('h3', 't', e.name)); m.appendChild(el('p', 'a', e.blurb));
+    var p = el('div', 'price'); p.appendChild(el('span', 'now', cedi(e.price)));
+    if (deal) p.appendChild(el('span', 'save', 'Students ' + cedi(dealPrice(e))));
+    m.appendChild(p);
+    m.appendChild(e.stock === 0 ? el('div', 'stock out', 'Out of stock') : e.stock <= 3 ? el('div', 'stock low', 'Only ' + e.stock + ' left') : el('div', 'stock', 'In stock'));
+    var add = el('button', 'btn line sm add', 'Add to cart'); add.type = 'button'; add.dataset.later = 'buy'; m.appendChild(add);
+    a.appendChild(m); return a;
+  }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function dealBox(host) {
+    var e = todaysDeal();
+    var box = el('div', 'deal rv');
+    var ph = el('div', 'deal-ph'); var img = el('img'); img.src = e.img; img.alt = e.name; img.width = 720; img.height = 720; ph.appendChild(img); box.appendChild(ph);
+    var c = el('div', 'deal-copy');
+    c.appendChild(el('p', 'eyebrow', 'Today’s student deal'));
+    c.appendChild(el('h3', null, e.name));
+    var pr = el('p', 'deal-price');
+    pr.appendChild(el('span', 'now', cedi(dealPrice(e)))); pr.appendChild(el('s', null, cedi(e.price)));
+    pr.appendChild(el('span', 'save', DATA.deal.percent + '% off for students'));
+    c.appendChild(pr);
+    c.appendChild(el('p', 'ends', 'Ends in'));
+    var cd = el('div', 'countdown'); cd.setAttribute('role', 'timer');
+    var units = [['h', 'hours'], ['m', 'min'], ['s', 'sec']].map(function (u) { var b = el('span', 'unit'); var n = el('b', null, '00'); b.appendChild(n); b.appendChild(el('small', null, u[1])); cd.appendChild(b); return n; });
+    c.appendChild(cd);
+    c.appendChild(el('p', 'deal-note', 'Students only, applied at checkout. ' + DATA.deal.note));
+    var add = el('button', 'btn gold', 'Add to cart'); add.type = 'button'; add.dataset.later = 'buy'; c.appendChild(add);
+    box.appendChild(c); host.appendChild(box);
+    function tick() {
+      var left = Math.max(0, DAY - (Date.now() % DAY)), s = Math.floor(left / 1000);
+      var vals = [Math.floor(s / 3600), Math.floor(s % 3600 / 60), s % 60];
+      units.forEach(function (n, i) { var v = pad(vals[i]); if (n.textContent !== v) { n.textContent = v; if (!reduce && i === 2) { n.classList.remove('flip'); void n.offsetWidth; n.classList.add('flip'); } } });
+      cd.setAttribute('aria-label', 'Deal ends in ' + vals[0] + ' hours ' + vals[1] + ' minutes');
+      if (left < 1000) setTimeout(function () { host.replaceChildren(); dealBox(host); }, 1500);
+    }
+    tick(); var iv = setInterval(function () { if (!document.body.contains(cd)) { clearInterval(iv); return; } tick(); }, 1000);
+  }
+
   // ---------- pages ----------
   function home() {
     var pop = DATA.popular.map(byId);
@@ -220,6 +273,8 @@
     shelf(document.getElementById('shelf-myst'), DATA.books.filter(function (b) { return b.genre === 'myst'; }), 'Mystery and crime');
     var chips = document.getElementById('home-chips');
     DATA.genres.forEach(function (g) { var a = el('a', 'chip', g.name); a.href = '/browse/?genre=' + g.id; chips.appendChild(a); });
+    dealBox(document.getElementById('deal'));
+    var eg = document.getElementById('ess-grid'); DATA.essentials.slice(0, 4).forEach(function (e) { eg.appendChild(essCard(e)); });
     var tiles = document.getElementById('tiles');
     [{ g: 'myst', cols: ['#24384f', '#5e1d22', '#2c6e58'] }, { g: 'drama', cols: ['#5b3b7a', '#a8475e', '#1f5f86'] },
      { g: 'text', img: '/img/campus-study-area.webp', name: 'Course textbooks', line: 'Free OpenStax e-books for core courses.' },
@@ -243,6 +298,7 @@
     DATA.genres.forEach(function (x) { var a = el('a', 'chip', x.name); a.href = '/browse/?genre=' + x.id; chips.appendChild(a); });
     chips.querySelectorAll('a').forEach(function (a) { if ((state.genre === 'all' && a.getAttribute('href') === '/browse/') || a.getAttribute('href').endsWith('=' + state.genre)) { a.setAttribute('aria-current', 'page'); setTimeout(function () { a.scrollIntoView({ block: 'nearest', inline: 'center' }); }, 0); } });
     var G = GENRES[state.genre];
+    if (state.genre === 'essentials') { document.getElementById('f-mode').hidden = true; document.getElementById('f-free-l').hidden = true; document.getElementById('f-src').hidden = true; document.getElementById('f-stock-t').textContent = 'In stock'; dealBox(document.getElementById('cat-deal')); }
     document.getElementById('cat-title').textContent = G ? G.name : 'All books';
     document.getElementById('cat-sub').textContent = G ? G.line : 'Classic fiction and course textbooks, as e-books or hard copies.';
     document.title = (G ? G.name : 'All books') + ' · GCTU Bookshop';
@@ -258,6 +314,15 @@
         return a.rank - b.rank;
       });
       grid.replaceChildren();
+      if (state.genre === 'essentials') {
+        var es = DATA.essentials.filter(function (e) { return !state.instock || e.stock > 0; }).slice();
+        if (state.sort === 'az') es.sort(function (a, b) { return a.name.localeCompare(b.name); });
+        if (state.sort === 'low') es.sort(function (a, b) { return a.price - b.price; });
+        grid.classList.add('ess-grid');
+        es.forEach(function (e) { var c = essCard(e); c.classList.remove('rv'); grid.appendChild(c); });
+        count.textContent = es.length + ' item' + (es.length === 1 ? '' : 's'); return;
+      }
+      grid.classList.remove('ess-grid');
       if (state.genre === 'afr') {
         var c = el('div', 'coming'); c.appendChild(el('b', null, 'African Stories are on the way'));
         c.appendChild(document.createTextNode('These come from African Storybook (CC BY 4.0) and are added in a later stage, with each author and illustrator credited.'));
@@ -297,6 +362,11 @@
       if (!q) { box.appendChild(el('p', 'empty', 'Type a title, author, genre or course code.')); return; }
       var ql = q.toLowerCase();
       var hits = DATA.books.filter(function (b) { return [b.title, b.author, b.course || '', b.faculty || '', GENRES[b.genre].name, String(b.year || '')].join(' ').toLowerCase().indexOf(ql) >= 0; });
+      var ess = DATA.essentials.filter(function (e) { return (e.name + ' ' + e.blurb + ' stationery essentials').toLowerCase().indexOf(ql) >= 0; });
+      if (!hits.length && ess.length) {
+        box.appendChild(el('p', 'empty', ess.length + ' campus essential' + (ess.length > 1 ? 's' : '') + ' for “' + q + '”')).style.padding = '6px 0 0';
+        var eg = el('div', 'grid ess-grid'); ess.forEach(function (e) { var c = essCard(e); c.classList.remove('rv'); eg.appendChild(c); }); box.appendChild(eg); return;
+      }
       if (!hits.length) {
         var n = el('div', 'none'); n.appendChild(el('h2', null, 'No books found for “' + q + '”'));
         n.appendChild(el('p', null, 'We may not stock it yet. Ask the librarian and you’ll get a reply in your messages.'));
@@ -314,6 +384,7 @@
         list.appendChild(a);
       });
       box.appendChild(list);
+      if (ess.length) { box.appendChild(el('h2', 'sub-h', 'Campus essentials')); var eg2 = el('div', 'grid ess-grid'); ess.forEach(function (e) { var c = essCard(e); c.classList.remove('rv'); eg2.appendChild(c); }); box.appendChild(eg2); }
     }
     var t; input.addEventListener('input', function () { clearTimeout(t); t = setTimeout(render, 120); });
     document.getElementById('big-search').addEventListener('submit', function (e) { e.preventDefault(); render(); });
@@ -364,9 +435,13 @@
     else { fact('First published', (b.year < 1700 ? 'c. ' : '') + b.year); fact('Genre', G.name); }
     fact('Hard copy', b.stock === 0 ? 'Out of stock' : b.stock + ' in stock');
     fact('E-book', 'Reads in the browser');
-    document.getElementById('licence').textContent = os
-      ? 'OpenStax textbook, licensed CC BY 4.0. Access for free at openstax.org. Cover designed for this demo; OpenStax’s own covers and logo are not used.'
-      : 'Public domain: the author died more than 70 years ago, so the text is free to use in Ghana and worldwide. Cover designed for this demo.';
+    var lic = document.getElementById('licence');
+    if (os) lic.textContent = 'OpenStax textbook, licensed CC BY 4.0. Access for free at openstax.org. Cover designed for this demo; OpenStax’s own covers and logo are not used.';
+    else {
+      lic.appendChild(document.createTextNode('Public domain: the author died more than 70 years ago, so the text is free to use in Ghana and worldwide. '));
+      if (b.sourceUrl) { lic.appendChild(document.createTextNode('Edition and cover: ')); var se = el('a', null, 'Standard Ebooks'); se.href = b.sourceUrl; se.rel = 'noopener'; lic.appendChild(se); lic.appendChild(document.createTextNode(' (CC0 public domain dedication).')); }
+      else lic.appendChild(document.createTextNode('Cover designed for this demo.'));
+    }
     var more = DATA.books.filter(function (x) { return x.genre === b.genre && x.id !== b.id; }).slice(0, 8);
     document.getElementById('more-title').textContent = 'More ' + (os ? 'course textbooks' : G.name);
     shelf(document.getElementById('shelf-more'), more, 'More ' + G.name);
