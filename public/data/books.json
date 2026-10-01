@@ -1,5 +1,5 @@
 {
- "note": "Demo catalogue. Prices are example values. Fiction: public domain (authors died more than 70 years ago). Textbooks: OpenStax, CC BY 4.0, access for free at openstax.org; course codes are examples. Covers for classics: Standard Ebooks (CC0), standardebooks.org. Campus essentials photos: AI-generated (Higgsfield) for this demo; prices are examples.",
+ "note": "Demo catalogue. Prices are example values. Fiction: public domain (authors died more than 70 years ago). Textbooks: OpenStax, CC BY 4.0, access for free at openstax.org; course codes are examples. Covers for classics: Standard Ebooks (CC0), standardebooks.org. Campus essentials: brand photos from Wikimedia Commons (credited per item); other photos and textbook cover art AI-generated (Higgsfield) for this demo; prices are examples.",
  "genres": [
   {
    "id": "myst",
@@ -549,7 +549,8 @@
    "course": "MATH 101",
    "faculty": "Maths & Science",
    "blurb": "Functions, limits, derivatives and an introduction to integration, with worked examples.",
-   "rank": 100
+   "rank": 100,
+   "art": "/img/textbooks/calculus-1.webp"
   },
   {
    "id": "intro-stats",
@@ -564,7 +565,8 @@
    "course": "STAT 201",
    "faculty": "Maths & Science",
    "blurb": "Collecting and describing data, probability, and testing ideas with real numbers.",
-   "rank": 101
+   "rank": 101,
+   "art": "/img/textbooks/intro-stats.webp"
   },
   {
    "id": "python",
@@ -579,7 +581,8 @@
    "course": "CSC 101",
    "faculty": "Computing",
    "blurb": "A first programming course in Python: variables, loops, functions and working with data.",
-   "rank": 102
+   "rank": 102,
+   "art": "/img/textbooks/python.webp"
   },
   {
    "id": "data-science",
@@ -594,7 +597,8 @@
    "course": "CSC 210",
    "faculty": "Computing",
    "blurb": "From asking a question to cleaning data, analysing it and presenting what it shows.",
-   "rank": 103
+   "rank": 103,
+   "art": "/img/textbooks/data-science.webp"
   },
   {
    "id": "workplace-software",
@@ -609,7 +613,8 @@
    "course": "ICT 102",
    "faculty": "Computing",
    "blurb": "Documents, spreadsheets, presentations and collaboration tools used at work.",
-   "rank": 104
+   "rank": 104,
+   "art": "/img/textbooks/workplace-software.webp"
   },
   {
    "id": "intro-business",
@@ -624,7 +629,8 @@
    "course": "BUS 101",
    "faculty": "Business",
    "blurb": "How businesses are started, organised, financed and run.",
-   "rank": 105
+   "rank": 105,
+   "art": "/img/textbooks/intro-business.webp"
   },
   {
    "id": "economics",
@@ -639,7 +645,8 @@
    "course": "ECON 101",
    "faculty": "Business",
    "blurb": "Supply and demand, markets, and how whole economies grow and shrink.",
-   "rank": 106
+   "rank": 106,
+   "art": "/img/textbooks/economics.webp"
   },
   {
    "id": "accounting-1",
@@ -654,7 +661,8 @@
    "course": "ACC 101",
    "faculty": "Business",
    "blurb": "Recording transactions and reading financial statements.",
-   "rank": 107
+   "rank": 107,
+   "art": "/img/textbooks/accounting-1.webp"
   },
   {
    "id": "management",
@@ -669,7 +677,8 @@
    "course": "MGT 201",
    "faculty": "Business",
    "blurb": "Planning, organising, leading and controlling, with modern case examples.",
-   "rank": 108
+   "rank": 108,
+   "art": "/img/textbooks/management.webp"
   },
   {
    "id": "psychology",
@@ -684,17 +693,49 @@
    "course": "PSY 101",
    "faculty": "Maths & Science",
    "blurb": "An introduction to how people think, feel, learn and behave.",
-   "rank": 109
+   "rank": 109,
+   "art": "/img/textbooks/psychology.webp"
   }
  ],
  "essentials": [
   {
-   "id": "calculator",
-   "name": "Everyday calculator",
-   "blurb": "Large display and big keys for quick sums in class and the lab.",
-   "price": 85,
-   "stock": 9,
-   "img": "/img/essentials/calculator.webp"
+   "id": "casio-fx991ex",
+   "name": "Casio fx-991EX ClassWiz scientific calculator",
+   "blurb": "Non-programmable scientific calculator with a high-resolution display, for maths, engineering and statistics.",
+   "price": 450,
+   "stock": 8,
+   "img": "/img/essentials/casio-fx991ex.webp",
+   "credit": "Photo: David Wheatley, CC0",
+   "creditUrl": "https://commons.wikimedia.org/wiki/File:Casio_fx-991EX_Scientific_Calculator.jpg"
+  },
+  {
+   "id": "casio-fx82es",
+   "name": "Casio fx-82ES PLUS scientific calculator",
+   "blurb": "Shows fractions and roots the way they look in the textbook. A reliable first scientific calculator.",
+   "price": 220,
+   "stock": 14,
+   "img": "/img/essentials/casio-fx82es.webp",
+   "credit": "Photo: 神樂坂秀吉, CC0",
+   "creditUrl": "https://commons.wikimedia.org/wiki/File:CASIO_fx-82ES_PLUS_A.jpg"
+  },
+  {
+   "id": "bic-cristal",
+   "name": "BIC Cristal ballpoint pens, pack of 10",
+   "blurb": "Blue, black, red and green. The see-through barrel shows how much ink is left.",
+   "price": 25,
+   "stock": 40,
+   "img": "/img/essentials/bic-cristal.webp",
+   "credit": "Photo: Carlos Delgado, CC BY-SA 3.0",
+   "creditUrl": "https://commons.wikimedia.org/wiki/File:4_Bic_Cristal_pens_and_caps.jpg"
+  },
+  {
+   "id": "nataraj-pencils",
+   "name": "Nataraj HB pencils, pack of 10",
+   "blurb": "Classic HB pencils for drawing, exams and shading answer sheets.",
+   "price": 15,
+   "stock": 35,
+   "img": "/img/essentials/nataraj-pencils.webp",
+   "credit": "Illustrative photo (AI-generated), not the actual product."
   },
   {
    "id": "notebooks",
@@ -702,15 +743,8 @@
    "blurb": "Ruled, navy covers, 80 pages each.",
    "price": 45,
    "stock": 30,
-   "img": "/img/essentials/notebooks.webp"
-  },
-  {
-   "id": "pens",
-   "name": "Ballpoint pens, pack of 6",
-   "blurb": "Blue, black and red. Smooth, quick-drying ink.",
-   "price": 20,
-   "stock": 40,
-   "img": "/img/essentials/pens.webp"
+   "img": "/img/essentials/notebooks.webp",
+   "credit": "Photo: AI-generated for this demo."
   },
   {
    "id": "highlighters",
@@ -718,7 +752,8 @@
    "blurb": "Five colours for colour-coding notes and past questions.",
    "price": 25,
    "stock": 22,
-   "img": "/img/essentials/highlighters.webp"
+   "img": "/img/essentials/highlighters.webp",
+   "credit": "Photo: AI-generated for this demo."
   },
   {
    "id": "maths-set",
@@ -726,15 +761,38 @@
    "blurb": "Compass, protractors, ruler, pencil and eraser for technical drawing and maths.",
    "price": 30,
    "stock": 15,
-   "img": "/img/essentials/maths-set.webp"
+   "img": "/img/essentials/maths-set.webp",
+   "credit": "Photo: AI-generated for this demo."
   },
   {
-   "id": "flash-drive",
-   "name": "USB flash drive, 32 GB",
-   "blurb": "For assignments, slides and backups. Cap included.",
-   "price": 60,
+   "id": "sandisk-cruzer",
+   "name": "SanDisk Cruzer USB flash drive, 32 GB",
+   "blurb": "Slide-out connector, so there is no cap to lose.",
+   "price": 70,
    "stock": 12,
-   "img": "/img/essentials/flash-drive.webp"
+   "img": "/img/essentials/sandisk-cruzer.webp",
+   "credit": "The photo shows an older 4 GB model. Photo: Evan-Amos, Public domain",
+   "creditUrl": "https://commons.wikimedia.org/wiki/File:SanDisk-Cruzer-USB-4GB-ThumbDrive.jpg"
+  },
+  {
+   "id": "samsung-fit",
+   "name": "Samsung FIT Plus USB flash drive, 128 GB",
+   "blurb": "Tiny enough to leave plugged into a laptop. USB 3.1.",
+   "price": 180,
+   "stock": 6,
+   "img": "/img/essentials/samsung-fit.webp",
+   "credit": "Photo: Hayden Schiff, CC BY 4.0",
+   "creditUrl": "https://commons.wikimedia.org/wiki/File:Samsung_FIT_Plus_128GB_flash_drive_HS1.jpg"
+  },
+  {
+   "id": "kingston-dt",
+   "name": "Kingston DataTraveler G4 USB flash drive, 64 GB",
+   "blurb": "Key-ring loop and a cap that clips on the back.",
+   "price": 90,
+   "stock": 9,
+   "img": "/img/essentials/kingston-dt.webp",
+   "credit": "Photo: Cjp24, CC BY-SA 4.0",
+   "creditUrl": "https://commons.wikimedia.org/wiki/File:Kingston_Technology_DataTraveler_G4,_64_GB.jpg"
   },
   {
    "id": "backpack",
@@ -742,7 +800,8 @@
    "blurb": "Navy with gold zips. Fits a laptop, books and a water bottle.",
    "price": 180,
    "stock": 6,
-   "img": "/img/essentials/backpack.webp"
+   "img": "/img/essentials/backpack.webp",
+   "credit": "Photo: AI-generated for this demo."
   },
   {
    "id": "laptop-bag",
@@ -750,7 +809,8 @@
    "blurb": "Fits most 15-inch laptops, with a front pocket for chargers.",
    "price": 220,
    "stock": 3,
-   "img": "/img/essentials/laptop-bag.webp"
+   "img": "/img/essentials/laptop-bag.webp",
+   "credit": "Photo: AI-generated for this demo."
   }
  ],
  "promotions": {
@@ -759,7 +819,7 @@
   "epoch": "2026-09-28T00:00:00Z",
   "cycle": [
    {
-    "item": "calculator",
+    "item": "casio-fx991ex",
     "percent": 10,
     "days": 14
    },
@@ -779,7 +839,7 @@
     "days": 21
    },
    {
-    "item": "flash-drive",
+    "item": "sandisk-cruzer",
     "percent": 10,
     "days": 1
    }

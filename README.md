@@ -37,6 +37,10 @@ python3 -m http.server 4400 --directory public
 - **Textbooks:** OpenStax, CC BY 4.0. Access for free at openstax.org. OpenStax's own covers and logo are not used; course codes are examples.
 - **Campus photos:** "Bookshop (GCTU)", "Student Study Area (GCTU)" and "Faculty of Computing & Information Studies (GCTU)"
   by Jwale2, Wikimedia Commons, CC BY-SA 4.0. Colour-corrected; the edited versions are shared under the same licence.
-- **Logo and covers:** original designs. The GCTU crest is not used.
+- **Classic covers:** Standard Ebooks (CC0). Linked from each book page.
+- **Textbook covers:** AI-generated subject artwork (Higgsfield) with our own lettering. OpenStax's own covers are not licensed for reuse, so they are not used.
+- **Brand product photos:** Wikimedia Commons, each credited and linked on its item (CC0, public domain, CC BY 4.0, CC BY-SA 3.0/4.0). Padded to a square; edited versions of CC BY-SA photos are shared under the same licence. Brand names describe the products only; this demo is not affiliated with Casio, BIC, Nataraj, SanDisk, Samsung or Kingston.
+- **Other product photos:** AI-generated for this demo. The Nataraj photo is illustrative and labelled as such.
+- **Logo:** original design. The GCTU crest is not used.
 - **Fonts:** Fraunces and DM Sans, SIL Open Font License 1.1 (`public/fonts/LICENSE.txt`).
 - Prices, delivery fees and times are demo values.

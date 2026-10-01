@@ -145,7 +145,7 @@
     var c2 = el('div'); c2.appendChild(el('h2', null, 'Credits & licences'));
     var p2 = el('p'); p2.appendChild(document.createTextNode('Campus photos: “Bookshop (GCTU)”, “Student Study Area (GCTU)” and “Faculty of Computing & Information Studies (GCTU)” by Jwale2, Wikimedia Commons, '));
     var cc = el('a', null, 'CC BY-SA 4.0'); cc.href = 'https://creativecommons.org/licenses/by-sa/4.0/'; cc.rel = 'license noopener'; p2.appendChild(cc);
-    p2.appendChild(document.createTextNode(', colour-corrected (edited versions under the same licence). Fiction: public domain. Textbooks: OpenStax, CC BY 4.0, access for free at openstax.org. Classic covers: Standard Ebooks (CC0); other covers are original designs. Campus essentials photos: AI-generated with Higgsfield for this demo. Fonts: Fraunces and DM Sans (SIL OFL).'));
+    p2.appendChild(document.createTextNode(', colour-corrected (edited versions under the same licence). Fiction: public domain. Textbooks: OpenStax, CC BY 4.0, access for free at openstax.org. Classic covers: Standard Ebooks (CC0); other covers are original designs. Brand product photos: Wikimedia Commons, credited on each item. Other product photos and textbook cover art: AI-generated with Higgsfield for this demo. Fonts: Fraunces and DM Sans (SIL OFL).'));
     c2.appendChild(p2); cr.appendChild(c1); cr.appendChild(c2); w.appendChild(cr);
     var bottom = el('div', 'fbottom'); bottom.appendChild(el('span', null, 'Concept demo · not a real shop · no real orders or payments · not an official GCTU service'));
     var tt = el('button', 'totop'); tt.appendChild(el('span', 'up', '↑')); tt.appendChild(document.createTextNode(' Back to top'));
@@ -170,7 +170,8 @@
       var img = el('img'); img.src = b.cover; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async'; img.width = 350; img.height = 525;
       ci.appendChild(img); return ci;
     }
-    var c = el('div', 'cover g-' + b.genre + (variant(b) ? ' v' + variant(b) : ''));
+    var c = el('div', 'cover g-' + b.genre + (variant(b) ? ' v' + variant(b) : '') + (b.art ? ' has-art' : ''));
+    if (b.art) { var art = el('img', 'art'); art.src = b.art; art.alt = ''; art.loading = 'lazy'; art.decoding = 'async'; art.width = 480; art.height = 640; c.appendChild(art); }
     c.appendChild(el('span', 'k', b.source === 'openstax' ? 'OpenStax · ' + b.course : GENRES[b.genre].name));
     var mid = el('div'); mid.appendChild(el('div', 'ttl', b.title)); mid.appendChild(el('div', 'rule')); mid.appendChild(el('div', 'au', b.author)); c.appendChild(mid);
     c.appendChild(el('span', 'orn')); c.setAttribute('aria-hidden', 'true');
@@ -245,7 +246,11 @@
     if (on) p.appendChild(el('span', 'save', 'Students ' + cedi(promoPrice(e, pr.percent))));
     m.appendChild(p);
     m.appendChild(e.stock === 0 ? el('div', 'stock out', 'Out of stock') : e.stock <= 3 ? el('div', 'stock low', 'Only ' + e.stock + ' left') : el('div', 'stock', 'In stock'));
-    if (e.credit) m.appendChild(el('p', 'photo-credit', e.credit));
+    if (e.credit) {
+      var pc = el('p', 'photo-credit');
+      if (e.creditUrl) { var cl = el('a', null, e.credit); cl.href = e.creditUrl; cl.rel = 'noopener'; pc.appendChild(cl); } else pc.textContent = e.credit;
+      m.appendChild(pc);
+    }
     var add = el('button', 'btn line sm add', 'Add to cart'); add.type = 'button'; add.dataset.later = 'buy'; m.appendChild(add);
     a.appendChild(m); return a;
   }
