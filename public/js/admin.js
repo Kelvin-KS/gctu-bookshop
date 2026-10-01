@@ -71,7 +71,7 @@
     for (var k = 0; k < 3; k++) { var c = P.cycle[(i + k) % P.cycle.length]; promos.push({ id: 'PR-' + (k + 1), item: c.item, percent: c.percent, start: t0, end: t0 + c.days * DAY }); t0 += c.days * DAY; }
     var lect = SAMPLE.lecturers.map(function (l) { var x = Object.assign({}, l); if (l.status === 'setup') { x.code = newCode(); x.codeExpires = now + l.codeDaysLeft * DAY; } return x; });
     var reqs = SAMPLE.requests.map(function (r) { var x = Object.assign({}, r); x.at = now - r.daysAgo * DAY; return x; });
-    ST = { v: 1, orders: orders, students: SAMPLE.students.slice(), lecturers: lect, requests: reqs, books: {}, ess: {}, newBooks: [], promotions: promos, nextOrder: 1079 };
+    ST = { v: 1, sv: SAMPLE.version || 1, orders: orders, students: SAMPLE.students.slice(), lecturers: lect, requests: reqs, books: {}, ess: {}, newBooks: [], promotions: promos, nextOrder: 1079 };
     save();
   }
   function newCode() { var A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s = ''; for (var i = 0; i < 6; i++) s += A[Math.floor(Math.random() * A.length)]; return s.slice(0, 3) + '-' + s.slice(3); }
@@ -627,7 +627,7 @@
   Promise.all(['/data/books.json', '/data/admin-sample.json', '/data/messages-sample.json'].map(function (u) { return fetch(u).then(function (r) { return r.json(); }); })).then(function (d) {
     CAT = d[0]; SAMPLE = d[1]; MSAMPLE = d[2]; GBMessages.init(d[2]);
     try { ST = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { ST = null; }
-    if (!ST || ST.v !== 1 || !ST.students[0].courses) seed();
+    if (!ST || ST.v !== 1 || ST.sv !== (SAMPLE.version || 1)) seed(); // sample data changed: start fresh
     // Requests lecturers sent from the Faculty desk (same browser) join the librarian's list.
     try { var gl = JSON.parse(localStorage.getItem('gb-lists') || 'null'); (gl && gl.requests || []).forEach(function (r) { if (!ST.requests.some(function (x) { return x.id === r.id; })) ST.requests.push({ id: String(r.id), student: String(r.student), title: String(r.title).slice(0, 160), format: String(r.format), status: 'waiting', note: '', at: Number(r.at) || Date.now(), message: String(r.message || '').slice(0, 300) }); }); save(); } catch (e) {}
     window.addEventListener('hashchange', route); route();

@@ -81,7 +81,7 @@
   function accountSheet(opener) {
     var d = DEMO[session.role];
     var next = session.role === 'lecturer' ? 'Your reading lists are on the Faculty desk.' : session.role === 'librarian' ? 'Your dashboard is at /admin/dashboard/.' : 'My Library, orders and messages arrive with the rest of stage 2.';
-    sheet(d.name, d.label + ' · signed in on this device only. ' + next, [], (session.role === 'librarian' ? [['Open the dashboard', 'navy', function () { location.href = '/admin/dashboard/'; }]] : session.role === 'lecturer' ? [['Open the Faculty desk', 'maroon', function () { location.href = '/faculty/'; }]] : []).concat([
+    sheet(d.name, d.label + ' · signed in on this device only. ' + next, [], (session.role === 'librarian' ? [['Open the dashboard', 'navy', function () { location.href = '/admin/dashboard/'; }]] : session.role === 'lecturer' ? [['Open the Faculty desk', 'maroon', function () { location.href = '/faculty/'; }]] : [['My courses', 'line', function () { location.href = '/course/'; }], ['Notifications', 'line', function () { location.href = '/notifications/'; }]]).concat([
       ['Sign out', session.role === 'student' ? 'navy' : 'line', function () { clearSession(); flash('Signed out.'); location.href = '/'; }],
       ['Close', 'line']
     ]), opener);
@@ -569,14 +569,25 @@
   }
 
   // ---------- course reading lists (from lecturers) ----------
-  var RL = null;
+  var RL = null, ME_COURSES = null;
+  var STUDENT_ID = 'DEMO-S-1040'; // the demo student account (Ama Owusu)
   function loadLists() {
-    return fetch('/data/reading-lists.json').then(function (r) { return r.json(); }).then(function (d) {
-      RL = d; var saved = null; try { saved = JSON.parse(localStorage.getItem('gb-lists') || 'null'); } catch (e) {}
-      RL.live = saved && saved.v === 1 && saved.lists ? saved.lists : d.lists;
+    if (RL) return Promise.resolve(RL);
+    var need = [fetch('/data/reading-lists.json').then(function (r) { return r.json(); })];
+    if (session && session.role === 'student') need.push(fetch('/data/admin-sample.json').then(function (r) { return r.json(); }));
+    return Promise.all(need).then(function (d) {
+      RL = d[0]; var saved = null; try { saved = JSON.parse(localStorage.getItem('gb-lists') || 'null'); } catch (e) {}
+      RL.live = saved && saved.v === 1 && saved.sv === (RL.version || 1) && saved.lists ? saved.lists : RL.lists;
       // A lecturer switched off by the librarian has their lists hidden.
-      var off = ADMIN && ADMIN.lecturers ? ADMIN.lecturers.filter(function (l) { return l.status === 'off'; }).map(function (l) { return l.id; }) : [];
+      var adm = ADMIN && ADMIN.sv === (d[1] ? d[1].version : ADMIN.sv) ? ADMIN : null;
+      var off = adm && adm.lecturers ? adm.lecturers.filter(function (l) { return l.status === 'off'; }).map(function (l) { return l.id; }) : [];
       Object.keys(RL.live).forEach(function (c) { if (off.indexOf(RL.live[c].by) >= 0) RL.live[c] = Object.assign({}, RL.live[c], { published: false }); });
+      if (d[1]) {
+        // The courses this student takes, as set by the librarian.
+        var roster = adm && adm.students ? adm.students : d[1].students, me = roster.filter(function (s) { return s.id === STUDENT_ID; })[0];
+        ME_COURSES = me && me.courses ? me.courses.slice() : [];
+        if (adm && adm.lecturers) adm.lecturers.forEach(function (l) { RL.lecturers[l.id] = l.name; });
+      }
       return RL;
     });
   }
@@ -584,11 +595,99 @@
     var b = byId(id); if (b) return { kind: 'book', b: b };
     var e = DATA.essentials.filter(function (x) { return x.id === id; })[0]; return e ? { kind: 'ess', e: e } : null;
   }
-  function publishedCodes() { return Object.keys(RL.live).filter(function (c) { var l = RL.live[c]; return l && l.published && l.items && l.items.length; }); }
+  function isLive(c) { var l = RL.live[c]; return l && l.published && l.items && l.items.length; }
+  function publishedCodes() { return Object.keys(RL.live).filter(isLive); }
   function slugC(c) { return c.replace(/\s+/g, '-'); }
-  function listCard(code) {
+  function itemName(id) { var x = listItem(id); return x ? (x.kind === 'book' ? x.b.title : x.e.name) : 'an item'; }
+
+  // ---------- student notifications ----------
+  // One notification per course, however many times its list changed. Only publishing, new items and
+  // items made essential notify. What a student has seen and muted is kept in this browser for the demo.
+  var DAYMS = 86400000, STU = null;
+  function stuLoad() {
+    try { STU = JSON.parse(localStorage.getItem('gb-student') || 'null'); } catch (e) { STU = null; }
+    if (!STU || STU.v !== 1) { STU = { v: 1, seen: {}, muted: [], first: Date.now() }; stuSave(); }
+  }
+  function stuSave() { try { localStorage.setItem('gb-student', JSON.stringify(STU)); } catch (e) {} }
+  function changeAt(ch) { if (ch.at) return ch.at; var d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime() - (ch.daysAgo || 0) * DAYMS + (ch.hour || 10) * 3600000; }
+  function seenFor(code) { return STU.seen[code] || STU.first - 3 * DAYMS; } // demo: the last 3 days start unread
+  function groups(all) {
+    var cutoff = Date.now() - 30 * DAYMS;
+    return (ME_COURSES || []).filter(isLive).map(function (code) {
+      var l = RL.live[code], seen = seenFor(code);
+      var chs = (l.changes || []).map(function (c) { return Object.assign({}, c, { at: changeAt(c) }); }).filter(function (c) { return c.at > cutoff && c.at <= Date.now(); });
+      var unread = chs.filter(function (c) { return c.at > seen; });
+      var show = unread.length ? unread : all ? chs : []; // unread changes first; read ones only in the full list
+      if (!show.length) return null;
+      return { code: code, l: l, changes: show, latest: Math.max.apply(null, show.map(function (c) { return c.at; })), unread: unread.length > 0 && STU.muted.indexOf(code) < 0, muted: STU.muted.indexOf(code) >= 0 };
+    }).filter(Boolean).filter(function (g) { return all || !g.muted; }).sort(function (a, b) { return b.latest - a.latest; });
+  }
+  function ago(t) {
+    var s = (Date.now() - t) / 1000;
+    if (s < 3600) return Math.max(1, Math.round(s / 60)) + ' min ago';
+    if (s < 86400) return Math.round(s / 3600) + ' h ago';
+    if (s < 2 * 86400) return 'Yesterday';
+    return Math.round(s / 86400) + ' days ago';
+  }
+  function describe(g) {
+    var bits = g.changes.slice().sort(function (a, b) { return b.at - a.at; }).map(function (c) {
+      return c.kind === 'published' ? 'Published the reading list' : c.kind === 'added' ? 'Added ' + itemName(c.item) : 'Marked ' + itemName(c.item) + ' essential';
+    });
+    var more = bits.length > 2 ? ' + ' + (bits.length - 2) + ' more' : '';
+    return bits.slice(0, 2).join(' · ') + more;
+  }
+  function initials(name) { return name.replace(/^(Dr|Mrs|Mr|Prof|Ms)\.\s*/, '').split(/[\s.\-]+/).filter(Boolean).map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase(); }
+  function notifItem(g, tag) {
+    var lect = RL.lecturers[g.l.by] || 'Your lecturer';
+    var a = el(tag || 'a', 'nt' + (g.unread ? ' unread' : '') + (g.muted ? ' muted' : '')); if (!tag) a.href = '/course/?code=' + encodeURIComponent(slugC(g.code));
+    a.appendChild(el('span', 'nt-av', initials(lect)));
+    var t = el('span', 'nt-body');
+    var top = el('b'); top.textContent = lect + ' updated ' + g.code; t.appendChild(top);
+    t.appendChild(el('span', 'nt-course', (RL.courses[g.code] || {}).name || ''));
+    t.appendChild(el('span', 'nt-what', describe(g) + (g.changes.length > 1 ? ' (' + g.changes.length + ' changes)' : '')));
+    t.appendChild(el('span', 'nt-when', ago(g.latest) + (g.muted ? ' · muted' : '')));
+    a.appendChild(t);
+    if (g.unread) a.appendChild(el('span', 'nt-dot', '')).setAttribute('aria-label', 'Unread');
+    return a;
+  }
+  function markAllRead() { (ME_COURSES || []).forEach(function (c) { STU.seen[c] = Date.now(); }); stuSave(); }
+  function bell() {
+    if (!session || session.role !== 'student') return;
+    var spot = document.querySelector('.top .wrap'); if (!spot) return;
+    var b = el('button', 'icon-btn bell'); b.type = 'button'; b.setAttribute('aria-haspopup', 'dialog'); b.setAttribute('aria-expanded', 'false'); b.setAttribute('aria-label', 'Notifications');
+    b.appendChild(svg('<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>'));
+    var count = el('span', 'badge', ''); count.hidden = true; b.appendChild(count);
+    var chip = spot.querySelector('.who'); spot.insertBefore(b, chip || null);
+    var panel = null;
+    function refresh() { var n = groups(false).filter(function (g) { return g.unread; }).length; count.textContent = n; count.hidden = !n; b.setAttribute('aria-label', 'Notifications' + (n ? ', ' + n + ' unread' : '')); }
+    function close() { if (!panel) return; panel.remove(); panel = null; b.setAttribute('aria-expanded', 'false'); document.removeEventListener('click', outside, true); document.removeEventListener('keydown', esc); }
+    function outside(e) { if (panel && !panel.contains(e.target) && !b.contains(e.target)) close(); }
+    function esc(e) { if (e.key === 'Escape') { close(); b.focus(); } }
+    function open() {
+      panel = el('div', 'nt-panel'); panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Notifications');
+      var hd = el('div', 'nt-head'); hd.appendChild(el('h2', null, 'Notifications'));
+      var mr = el('button', 'linkish', 'Mark all as read'); mr.type = 'button'; mr.addEventListener('click', function () { markAllRead(); refresh(); close(); open(); }); hd.appendChild(mr);
+      var x = el('button', 'nt-x', '×'); x.type = 'button'; x.setAttribute('aria-label', 'Close notifications'); x.addEventListener('click', function () { close(); b.focus(); }); hd.appendChild(x);
+      panel.appendChild(hd);
+      var list = el('div', 'nt-list'), gs = groups(true).filter(function (g) { return !g.muted; }).slice(0, 8);
+      if (!gs.length) list.appendChild(el('p', 'nt-empty', 'You’re all caught up. When a lecturer updates a reading list for one of your courses, it shows here.'));
+      gs.forEach(function (g) { list.appendChild(notifItem(g)); });
+      panel.appendChild(list);
+      var ft = el('div', 'nt-foot'); var all = el('a', 'see', 'All notifications and settings '); all.href = '/notifications/'; all.appendChild(el('span', 'arr', '→')); ft.appendChild(all); panel.appendChild(ft);
+      // Attached to the page (not the header, whose blur effect would trap a full-screen panel on phones).
+      document.body.appendChild(panel); place(); b.setAttribute('aria-expanded', 'true');
+      setTimeout(function () { document.addEventListener('click', outside, true); document.addEventListener('keydown', esc); (panel.querySelector('.nt') || mr).focus(); }, 0);
+    }
+    function place() { if (!panel) return; var r = b.getBoundingClientRect(); panel.style.top = (r.bottom + 6) + 'px'; panel.style.right = Math.max(16, window.innerWidth - r.right - 8) + 'px'; }
+    window.addEventListener('resize', place); window.addEventListener('scroll', place, { passive: true });
+    b.addEventListener('click', function () { if (panel) close(); else open(); });
+    loadLists().then(function () { stuLoad(); refresh(); });
+  }
+
+  function listCard(code, unread) {
     var l = RL.live[code], c = RL.courses[code] || {};
-    var a = el('a', 'list-card rv'); a.href = '/course/?code=' + encodeURIComponent(slugC(code));
+    var a = el('a', 'list-card'); a.href = '/course/?code=' + encodeURIComponent(slugC(code));
+    if (unread) { a.classList.add('is-updated'); a.appendChild(el('span', 'upd-tag', 'Updated')); }
     var covers = el('div', 'lc-covers'); covers.setAttribute('aria-hidden', 'true');
     l.items.slice(0, 3).forEach(function (it) { var x = listItem(it.id); if (!x) return; if (x.kind === 'book') covers.appendChild(cover(x.b)); else { var im = el('img'); im.src = x.e.img; im.alt = ''; covers.appendChild(im); } });
     a.appendChild(covers);
@@ -596,6 +695,22 @@
     a.appendChild(el('span', 'lc-by', (RL.lecturers[l.by] || 'Lecturer') + ' · ' + l.items.length + ' item' + (l.items.length === 1 ? '' : 's')));
     var s = el('span', 'see', 'Open the list '); s.appendChild(el('span', 'arr', '→')); a.appendChild(s);
     return a;
+  }
+  // My courses first (lists changed since I last looked come first), as a sideways shelf.
+  function myCourseShelf(host, label) {
+    var unreadCodes = groups(false).filter(function (g) { return g.unread; }).map(function (g) { return g.code; });
+    var mine = (ME_COURSES || []).filter(isLive).sort(function (a, b) { return (unreadCodes.indexOf(a) < 0) - (unreadCodes.indexOf(b) < 0); });
+    var s = el('div', 'shelf');
+    var prev = el('button', 'arrow prev', '‹'); prev.setAttribute('aria-label', 'Scroll ' + label + ' left'); prev.disabled = true;
+    var next = el('button', 'arrow next', '›'); next.setAttribute('aria-label', 'Scroll ' + label + ' right');
+    var rail = el('div', 'rail list-rail'); rail.setAttribute('role', 'list'); rail.setAttribute('aria-label', label);
+    mine.forEach(function (c) { var card = listCard(c, unreadCodes.indexOf(c) >= 0); card.setAttribute('role', 'listitem'); rail.appendChild(card); });
+    s.appendChild(prev); s.appendChild(rail); s.appendChild(next); host.appendChild(s);
+    function upd() { var max = rail.scrollWidth - rail.clientWidth; prev.disabled = rail.scrollLeft < 4; next.disabled = rail.scrollLeft > max - 4; }
+    rail.addEventListener('scroll', upd, { passive: true }); window.addEventListener('resize', upd); setTimeout(upd, 0);
+    function step(d) { rail.scrollBy({ left: d * rail.clientWidth * .8, behavior: reduce ? 'auto' : 'smooth' }); }
+    prev.addEventListener('click', function () { step(-1); }); next.addEventListener('click', function () { step(1); });
+    return mine.length;
   }
   function homeLists() {
     var host = document.getElementById('home-lists'); if (!host || !session) return;
@@ -606,10 +721,13 @@
         t.appendChild(el('p', null, 'Add books to your courses, mark them essential or optional, and see how many students have them.'));
         b.appendChild(t); var go = el('a', 'btn gold', 'Open the Faculty desk →'); go.href = '/faculty/'; b.appendChild(go); w.appendChild(b);
       } else if (session.role === 'student') {
-        var codes = publishedCodes(); if (!codes.length) return;
-        var h = el('div', 's-head rv'); var ht = el('div'); ht.appendChild(el('h2', null, 'Recommended by your lecturers')); ht.appendChild(el('p', null, 'Reading lists for your courses this semester.')); h.appendChild(ht);
-        var all = el('a', 'see', 'All reading lists '); all.href = '/course/'; all.appendChild(el('span', 'arr', '→')); h.appendChild(all); w.appendChild(h);
-        var g = el('div', 'lists-grid'); codes.forEach(function (c) { g.appendChild(listCard(c)); }); w.appendChild(g);
+        stuLoad();
+        var n = (ME_COURSES || []).filter(isLive).length; if (!n) return;
+        var upd = groups(false).filter(function (g) { return g.unread; }).length;
+        var h = el('div', 's-head rv'); var ht = el('div'); ht.appendChild(el('h2', null, 'Recommended by your lecturers'));
+        ht.appendChild(el('p', null, n + ' of your courses have a reading list' + (upd ? ' · ' + upd + ' updated since you last looked' : '') + '.')); h.appendChild(ht);
+        var all = el('a', 'see', 'My courses '); all.href = '/course/'; all.appendChild(el('span', 'arr', '→')); h.appendChild(all); w.appendChild(h);
+        myCourseShelf(w, 'Your course reading lists');
       } else return;
       host.appendChild(w); host.hidden = false; reveal();
     });
@@ -617,22 +735,34 @@
   function course() {
     var main = document.getElementById('course-main');
     loadLists().then(function () {
+      if (session && session.role === 'student') stuLoad();
       var code = (params.get('code') || '').replace(/-/g, ' ').toUpperCase().slice(0, 12);
       var l = code && RL.live[code];
       if (!code || !l || !l.published || !l.items.length) {
         document.title = 'Course reading lists · GCTU Bookshop';
         main.appendChild(el('p', 'eyebrow', 'Recommended by lecturers'));
-        main.appendChild(el('h1', 'page-title', 'Course reading lists'));
-        main.appendChild(el('p', 'page-sub', code ? 'There’s no published list for ' + code + ' yet. Here are the ones available.' : 'Books and items your lecturers recommend for each course.'));
-        var g = el('div', 'lists-grid'); publishedCodes().forEach(function (c) { g.appendChild(listCard(c)); }); main.appendChild(g);
+        main.appendChild(el('h1', 'page-title', ME_COURSES ? 'My courses' : 'Course reading lists'));
+        main.appendChild(el('p', 'page-sub', code ? 'There’s no published list for ' + code + ' yet.' : ME_COURSES ? 'Reading lists for the courses you take this semester.' : 'Books and items lecturers recommend for each course.'));
+        var others = publishedCodes();
+        if (ME_COURSES) {
+          var unreadCodes = groups(false).filter(function (g) { return g.unread; }).map(function (g) { return g.code; });
+          var g1 = el('div', 'lists-grid'); (ME_COURSES || []).filter(isLive).forEach(function (c) { var card = listCard(c, unreadCodes.indexOf(c) >= 0); card.classList.add('rv'); g1.appendChild(card); }); main.appendChild(g1);
+          var noList = ME_COURSES.filter(function (c) { return !isLive(c); }); if (noList.length) main.appendChild(el('p', 'small', 'No reading list yet: ' + noList.join(', ') + '.'));
+          others = others.filter(function (c) { return ME_COURSES.indexOf(c) < 0; });
+          if (others.length) main.appendChild(el('h2', 'sub-h', 'Other courses'));
+        }
+        var g = el('div', 'lists-grid'); others.forEach(function (c) { var card = listCard(c); card.classList.add('rv'); g.appendChild(card); }); main.appendChild(g);
         reveal(); return;
       }
       var c = RL.courses[code] || {}, mine = session && session.role === 'lecturer' && l.by === RL.lecturer;
+      var stu = session && session.role === 'student' && ME_COURSES && ME_COURSES.indexOf(code) >= 0;
+      var lastSeen = stu ? seenFor(code) : Infinity, chs = (l.changes || []).map(function (x) { return Object.assign({}, x, { at: changeAt(x) }); });
+      function since(kind, id) { return chs.some(function (x) { return x.kind === kind && x.item === id && x.at > lastSeen; }); }
       document.title = code + ' reading list · GCTU Bookshop';
-      var crumbs = el('nav', 'crumbs'); crumbs.setAttribute('aria-label', 'Breadcrumb'); var h1 = el('a', null, 'Home'); h1.href = '/'; var h2 = el('a', null, 'Reading lists'); h2.href = '/course/';
+      var crumbs = el('nav', 'crumbs'); crumbs.setAttribute('aria-label', 'Breadcrumb'); var h1 = el('a', null, 'Home'); h1.href = '/'; var h2 = el('a', null, ME_COURSES ? 'My courses' : 'Reading lists'); h2.href = '/course/';
       crumbs.appendChild(h1); crumbs.appendChild(document.createTextNode(' / ')); crumbs.appendChild(h2); crumbs.appendChild(document.createTextNode(' / ' + code)); main.appendChild(crumbs);
       var head = el('div', 'course-head');
-      var ht = el('div'); ht.appendChild(el('p', 'eyebrow', 'Recommended by your lecturer'));
+      var ht = el('div'); ht.appendChild(el('p', 'eyebrow', stu ? 'Recommended by your lecturer' : 'Course reading list'));
       ht.appendChild(el('h1', null, code + ' · ' + (c.name || ''))); ht.appendChild(el('p', 'byline', (RL.lecturers[l.by] || 'Lecturer') + ' · Level ' + (c.level || '') + ' · Semester 1, 2026/27'));
       if (l.intro) ht.appendChild(el('blockquote', 'intro-q', l.intro));
       head.appendChild(ht);
@@ -641,9 +771,15 @@
       if (mine) { var ed = el('a', 'btn maroon', 'Edit in the Faculty desk'); ed.href = '/faculty/#lists/' + slugC(code); act.appendChild(ed); }
       else { var all = el('button', 'btn navy', 'Add ' + (ess ? 'the ' + ess + ' essential' + (ess === 1 ? '' : 's') : 'all') + ' to cart'); all.type = 'button'; all.dataset.later = 'buy'; act.appendChild(all); }
       act.appendChild(el('span', 'small', l.items.length + ' item' + (l.items.length === 1 ? '' : 's') + ' · ' + ess + ' essential'));
+      if (stu) {
+        var mt = el('button', 'linkish small mute-t'); mt.type = 'button';
+        var setMt = function () { var m = STU.muted.indexOf(code) >= 0; mt.textContent = m ? 'Turn notifications back on for ' + code : 'Mute notifications for ' + code; mt.setAttribute('aria-pressed', String(m)); };
+        mt.addEventListener('click', function () { var i = STU.muted.indexOf(code); if (i >= 0) STU.muted.splice(i, 1); else STU.muted.push(code); stuSave(); setMt(); toast(i >= 0 ? 'Notifications on for ' + code + '.' : 'Muted ' + code + '. You can still open the list any time.'); });
+        setMt(); act.appendChild(mt);
+      }
       head.appendChild(act); main.appendChild(head);
       var ol = el('ol', 'clist');
-      l.items.forEach(function (it, i) {
+      l.items.forEach(function (it) {
         var x = listItem(it.id); if (!x) return;
         var li = el('li', 'cbook rv');
         var vis = el('a', 'cb-vis'); vis.setAttribute('aria-hidden', 'true'); vis.tabIndex = -1;
@@ -652,7 +788,11 @@
         var m = el('div', 'cb-mid');
         var tl = el('a', 'cb-title', x.kind === 'book' ? x.b.title : x.e.name); tl.href = vis.href; m.appendChild(tl);
         m.appendChild(el('span', 'cb-sub', (x.kind === 'book' ? x.b.author : 'Campus essentials')));
-        m.appendChild(el('span', 'tag-l ' + (it.essential ? 'ess' : 'opt'), it.essential ? 'Essential' : 'Optional'));
+        var tags = el('span', 'cb-tags');
+        tags.appendChild(el('span', 'tag-l ' + (it.essential ? 'ess' : 'opt'), it.essential ? 'Essential' : 'Optional'));
+        if (since('added', it.id)) { tags.appendChild(el('span', 'tag-l new', 'New')); li.classList.add('is-new'); }
+        else if (since('essential', it.id)) { tags.appendChild(el('span', 'tag-l new', 'Now essential')); li.classList.add('is-new'); }
+        m.appendChild(tags);
         if (it.note) m.appendChild(el('q', 'cb-note', it.note));
         li.appendChild(m);
         var side = el('div', 'cb-side');
@@ -661,7 +801,38 @@
         li.appendChild(side); ol.appendChild(li);
       });
       main.appendChild(ol);
+      // Opening the list counts as seeing its changes.
+      if (stu) { STU.seen[code] = Date.now(); stuSave(); var bc = document.querySelector('.bell .badge'); if (bc) { var n = groups(false).filter(function (g) { return g.unread; }).length; bc.textContent = n; bc.hidden = !n; } }
       reveal();
+    });
+  }
+  function notifications() {
+    var main = document.getElementById('notif-main');
+    main.appendChild(el('p', 'eyebrow', 'Account'));
+    main.appendChild(el('h1', 'page-title', 'Notifications'));
+    if (!session || session.role !== 'student') {
+      main.appendChild(el('p', 'page-sub', 'Notifications about reading-list changes are for students. Sign in with the demo student to see them.'));
+      var si = el('a', 'btn navy', 'Sign in'); si.href = '/sign-in/?next=/notifications/'; si.style.marginTop = '14px'; main.appendChild(si); return;
+    }
+    loadLists().then(function () {
+      stuLoad();
+      main.appendChild(el('p', 'page-sub', 'Changes to the reading lists for your courses in the last 30 days. One entry per course, however many changes.'));
+      var bar = el('div', 'nt-bar'); var mr = el('button', 'btn line sm', 'Mark all as read'); mr.type = 'button'; mr.addEventListener('click', function () { markAllRead(); location.reload(); }); bar.appendChild(mr); main.appendChild(bar);
+      var list = el('div', 'nt-list nt-page'), gs = groups(true);
+      if (!gs.length) list.appendChild(el('p', 'nt-empty', 'Nothing in the last 30 days.'));
+      gs.forEach(function (g) { list.appendChild(notifItem(g)); });
+      main.appendChild(list);
+      main.appendChild(el('h2', 'sub-h', 'Notifications for each course'));
+      main.appendChild(el('p', 'page-sub', 'Mute a course to stop its notifications. You can still open its reading list any time.'));
+      var ul = el('ul', 'mute-list');
+      (ME_COURSES || []).forEach(function (c) {
+        var li = el('li'), lab = el('label', 'switch-s'), cb = el('input'); cb.type = 'checkbox'; cb.checked = STU.muted.indexOf(c) < 0;
+        cb.addEventListener('change', function () { var i = STU.muted.indexOf(c); if (cb.checked && i >= 0) STU.muted.splice(i, 1); if (!cb.checked && i < 0) STU.muted.push(c); stuSave(); toast((cb.checked ? 'Notifications on for ' : 'Muted ') + c + '.'); });
+        lab.appendChild(cb); lab.appendChild(el('span', 'knob', ''));
+        var txt = el('span'); txt.appendChild(el('b', null, c)); txt.appendChild(document.createTextNode(' ' + ((RL.courses[c] || {}).name || '') + (isLive(c) ? '' : ' · no list yet'))); lab.appendChild(txt);
+        li.appendChild(lab); ul.appendChild(li);
+      });
+      main.appendChild(ul);
     });
   }
 
@@ -809,12 +980,13 @@
   if (page === 'firsttime') firstTime();
   fetch('/data/books.json').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
     DATA = d; d.genres.forEach(function (g) { GENRES[g.id] = g; }); GENRES.text = GENRES.text || { name: 'Course textbooks' };
-    applyAdmin();
+    applyAdmin(); bell();
     if (page === 'home') home();
     if (page === 'browse') browse();
     if (page === 'search') search();
     if (page === 'book') book();
     if (page === 'course') { course(); return; }
+    if (page === 'notifs') { notifications(); return; }
     reveal();
   }).catch(function () {
     var m = document.getElementById('main');

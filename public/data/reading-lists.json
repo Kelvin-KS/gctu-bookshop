@@ -4,38 +4,55 @@
  "courses": {
   "CSC 205": {
    "name": "Data Structures",
-   "level": 200,
-   "followers": 42
+   "level": 200
   },
   "CSC 301": {
    "name": "Operating Systems",
-   "level": 300,
-   "followers": 31
+   "level": 300
   },
   "STAT 201": {
    "name": "Introductory Statistics",
-   "level": 200,
-   "followers": 36
+   "level": 200
   },
   "BUS 101": {
    "name": "Introduction to Business",
-   "level": 100,
-   "followers": 58
+   "level": 100
   },
   "MGT 201": {
    "name": "Principles of Management",
-   "level": 200,
-   "followers": 40
+   "level": 200
   },
   "MATH 101": {
    "name": "Calculus I",
-   "level": 100,
-   "followers": 64
+   "level": 100
   },
   "ECON 101": {
    "name": "Principles of Economics",
-   "level": 100,
-   "followers": 51
+   "level": 100
+  },
+  "CSC 207": {
+   "name": "Programming with Python",
+   "level": 200
+  },
+  "MATH 201": {
+   "name": "Calculus II",
+   "level": 200
+  },
+  "ICT 203": {
+   "name": "Office Productivity",
+   "level": 200
+  },
+  "CMS 201": {
+   "name": "Communication Skills",
+   "level": 200
+  },
+  "BUS 205": {
+   "name": "Entrepreneurship",
+   "level": 200
+  },
+  "LIT 201": {
+   "name": "Literature in English (elective)",
+   "level": 200
   }
  },
  "lists": {
@@ -64,6 +81,25 @@
      "note": "Optional, for fun: a classic about thinking in systems.",
      "essential": false
     }
+   ],
+   "changes": [
+    {
+     "daysAgo": 20,
+     "hour": 10,
+     "kind": "published"
+    },
+    {
+     "daysAgo": 1,
+     "hour": 14,
+     "kind": "added",
+     "item": "python"
+    },
+    {
+     "daysAgo": 1,
+     "hour": 14,
+     "kind": "essential",
+     "item": "calculus-1"
+    }
    ]
   },
   "STAT 201": {
@@ -80,6 +116,13 @@
      "id": "casio-fx82es",
      "note": "A scientific calculator is required for tests.",
      "essential": true
+    }
+   ],
+   "changes": [
+    {
+     "daysAgo": 18,
+     "hour": 10,
+     "kind": "published"
     }
    ]
   },
@@ -98,6 +141,190 @@
      "note": "Background for the group project.",
      "essential": false
     }
+   ],
+   "changes": [
+    {
+     "daysAgo": 25,
+     "hour": 10,
+     "kind": "published"
+    }
+   ]
+  },
+  "CSC 207": {
+   "by": "DEMO-T-0021",
+   "published": true,
+   "intro": "We code in Python from week 1. Have the textbook open in every lab.",
+   "items": [
+    {
+     "id": "python",
+     "note": "Our main text. Chapters 1 to 8 this semester.",
+     "essential": true
+    },
+    {
+     "id": "data-science",
+     "note": "For the final project on cleaning and charting data.",
+     "essential": false
+    },
+    {
+     "id": "kingston-dt",
+     "note": "Bring a flash drive to every lab to keep your work.",
+     "essential": true
+    }
+   ],
+   "changes": [
+    {
+     "daysAgo": 16,
+     "hour": 10,
+     "kind": "published"
+    },
+    {
+     "daysAgo": 0,
+     "hour": 9,
+     "kind": "added",
+     "item": "data-science"
+    }
+   ]
+  },
+  "MATH 201": {
+   "by": "DEMO-T-0033",
+   "published": true,
+   "intro": "Revise Calculus I before the first class.",
+   "items": [
+    {
+     "id": "calculus-1",
+     "note": "Chapters 4 to 6 cover the first half of the course.",
+     "essential": true
+    },
+    {
+     "id": "casio-fx991ex",
+     "note": "Allowed in tests. Learn the integration function early.",
+     "essential": true
+    }
+   ],
+   "changes": [
+    {
+     "daysAgo": 14,
+     "hour": 10,
+     "kind": "published"
+    }
+   ]
+  },
+  "ICT 203": {
+   "by": "DEMO-T-0024",
+   "published": true,
+   "intro": "Practical course: bring your laptop to every session.",
+   "items": [
+    {
+     "id": "workplace-software",
+     "note": "Each lab follows a chapter.",
+     "essential": true
+    },
+    {
+     "id": "sandisk-cruzer",
+     "note": "For handing in assignments in the lab.",
+     "essential": false
+    }
+   ],
+   "changes": [
+    {
+     "daysAgo": 12,
+     "hour": 10,
+     "kind": "published"
+    }
+   ]
+  },
+  "CMS 201": {
+   "by": "DEMO-T-0027",
+   "published": true,
+   "intro": "We read one novel and one play for the presentation assignment.",
+   "items": [
+    {
+     "id": "pride",
+     "note": "Novel for the book review (weeks 3 to 6).",
+     "essential": true
+    },
+    {
+     "id": "earnest",
+     "note": "Play for the group reading in week 9.",
+     "essential": true
+    },
+    {
+     "id": "notebooks",
+     "note": "Keep a reading journal.",
+     "essential": false
+    }
+   ],
+   "changes": [
+    {
+     "daysAgo": 10,
+     "hour": 10,
+     "kind": "published"
+    },
+    {
+     "daysAgo": 2,
+     "hour": 11,
+     "kind": "added",
+     "item": "notebooks"
+    }
+   ]
+  },
+  "BUS 205": {
+   "by": "DEMO-T-0012",
+   "published": true,
+   "intro": "Case studies every week; read before class.",
+   "items": [
+    {
+     "id": "intro-business",
+     "note": "Chapters on starting a business.",
+     "essential": true
+    },
+    {
+     "id": "management",
+     "note": "Background for the business plan.",
+     "essential": false
+    }
+   ],
+   "changes": [
+    {
+     "daysAgo": 9,
+     "hour": 10,
+     "kind": "published"
+    }
+   ]
+  },
+  "LIT 201": {
+   "by": "DEMO-T-0030",
+   "published": true,
+   "intro": "Three classics, one per month.",
+   "items": [
+    {
+     "id": "hamlet",
+     "note": "October.",
+     "essential": true
+    },
+    {
+     "id": "dracula",
+     "note": "November.",
+     "essential": true
+    },
+    {
+     "id": "treasure",
+     "note": "December, if time allows.",
+     "essential": false
+    }
+   ],
+   "changes": [
+    {
+     "daysAgo": 7,
+     "hour": 10,
+     "kind": "published"
+    },
+    {
+     "daysAgo": 0,
+     "hour": 8,
+     "kind": "essential",
+     "item": "dracula"
+    }
    ]
   }
  },
@@ -105,6 +332,12 @@
   "DEMO-T-0007": "Dr. K. Mensah",
   "DEMO-T-0012": "Mrs. A. Owusu-Ansah",
   "DEMO-T-0019": "Mr. J. Tetteh",
-  "DEMO-T-0003": "Prof. E. Agyeman"
- }
+  "DEMO-T-0003": "Prof. E. Agyeman",
+  "DEMO-T-0021": "Mr. D. Asamoah",
+  "DEMO-T-0024": "Ms. P. Adomako",
+  "DEMO-T-0027": "Mrs. E. Darko-Mensah",
+  "DEMO-T-0030": "Dr. F. Quarcoo",
+  "DEMO-T-0033": "Mr. S. Ofori-Atta"
+ },
+ "version": 2
 }

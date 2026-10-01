@@ -9,7 +9,13 @@
    "graduates": "2029-07-31",
    "courses": [
     "CSC 205",
-    "STAT 201"
+    "STAT 201",
+    "CSC 207",
+    "MATH 201",
+    "ICT 203",
+    "CMS 201",
+    "BUS 205",
+    "LIT 201"
    ]
   },
   {
@@ -144,7 +150,10 @@
    "level": 200,
    "graduates": "2029-07-31",
    "courses": [
+    "CMS 201",
     "CSC 205",
+    "CSC 207",
+    "MATH 201",
     "STAT 201"
    ]
   },
@@ -155,7 +164,10 @@
    "level": 200,
    "graduates": "2029-07-31",
    "courses": [
+    "CMS 201",
     "CSC 205",
+    "CSC 207",
+    "MATH 201",
     "STAT 201"
    ]
   },
@@ -188,7 +200,10 @@
    "level": 200,
    "graduates": "2029-07-31",
    "courses": [
+    "CMS 201",
     "CSC 205",
+    "CSC 207",
+    "MATH 201",
     "STAT 201"
    ]
   },
@@ -318,7 +333,8 @@
    "department": "Business",
    "courses": [
     "BUS 101",
-    "MGT 201"
+    "MGT 201",
+    "BUS 205"
    ],
    "status": "active"
   },
@@ -340,6 +356,51 @@
     "ECON 101"
    ],
    "status": "off"
+  },
+  {
+   "id": "DEMO-T-0021",
+   "name": "Mr. D. Asamoah",
+   "department": "Computer Science",
+   "courses": [
+    "CSC 207"
+   ],
+   "status": "active"
+  },
+  {
+   "id": "DEMO-T-0024",
+   "name": "Ms. P. Adomako",
+   "department": "Information Technology",
+   "courses": [
+    "ICT 203"
+   ],
+   "status": "active"
+  },
+  {
+   "id": "DEMO-T-0027",
+   "name": "Mrs. E. Darko-Mensah",
+   "department": "Communication Studies",
+   "courses": [
+    "CMS 201"
+   ],
+   "status": "active"
+  },
+  {
+   "id": "DEMO-T-0030",
+   "name": "Dr. F. Quarcoo",
+   "department": "Languages",
+   "courses": [
+    "LIT 201"
+   ],
+   "status": "active"
+  },
+  {
+   "id": "DEMO-T-0033",
+   "name": "Mr. S. Ofori-Atta",
+   "department": "Mathematics",
+   "courses": [
+    "MATH 201"
+   ],
+   "status": "active"
   }
  ],
  "orders": [
@@ -2236,5 +2297,6 @@
    "note": "",
    "daysAgo": 1
   }
- ]
+ ],
+ "version": 2
 }

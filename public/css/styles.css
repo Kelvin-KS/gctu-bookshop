@@ -569,3 +569,50 @@ body[data-page="admin"]{background:#eef2f3}
 .cb-note{display:block;margin-top:4px;padding:8px 12px;border-left:3px solid var(--gold);background:#fdf9ef;border-radius:0 8px 8px 0;font-size:14.5px;color:#4a3d1c;quotes:none}
 .cb-side{display:grid;gap:8px;justify-items:end;text-align:right}
 @media(max-width:640px){.cbook{grid-template-columns:60px minmax(0,1fr)}.cb-side{grid-column:1/-1;justify-items:start;text-align:left}.cb-vis img{width:60px;height:60px}}
+
+/* ---------- notifications (students) ---------- */
+.top .wrap{position:relative}
+.bell{color:var(--navy)}
+.bell .badge{background:#c0392b;color:#fff}
+.nt-panel{position:fixed;right:20px;top:120px;z-index:70;width:min(400px,calc(100vw - 32px));max-height:min(70vh,560px);display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 30px 60px -24px rgba(15,23,51,.55);animation:rise .25s var(--ease);overflow:hidden}
+.nt-head{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.nt-head h2{margin:0;margin-right:auto;font:700 18px var(--serif)}
+.nt-head .linkish{font-size:13px;color:var(--navy)}
+.nt-x{border:0;background:#f1ede2;width:32px;height:32px;border-radius:9px;font-size:20px;line-height:1;color:var(--ink)}
+.nt-list{overflow-y:auto;overscroll-behavior:contain;display:grid}
+.nt{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr);gap:12px;padding:12px 34px 12px 16px;text-decoration:none;color:inherit;border-bottom:1px solid var(--line);transition:background .15s}
+.nt:hover,.nt:focus-visible{background:#fbf7ec}
+.nt.unread{background:#fffaf0}
+.nt-av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#5a2233;color:#fff;font:700 12.5px var(--sans)}
+.nt-body{display:grid;gap:1px;min-width:0}
+.nt-body b{font-size:14.5px}
+.nt-course{font-size:12.5px;color:var(--muted)}
+.nt-what{font-size:13.5px;color:var(--ink);margin-top:3px}
+.nt-when{font-size:12px;color:var(--muted);margin-top:2px}
+.nt-dot{position:absolute;right:14px;top:18px;width:9px;height:9px;border-radius:50%;background:#c0392b}
+.nt.muted{opacity:.6}
+.nt-empty{padding:22px 16px;color:var(--muted);margin:0}
+.nt-foot{padding:10px 16px;border-top:1px solid var(--line);background:#fbf8f1}
+@media(max-width:600px){
+  .nt-panel{inset:0!important;width:auto;max-height:none;border-radius:0}
+}
+.nt-page{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card);margin-top:12px;max-width:760px}
+.nt-page .nt:last-child{border-bottom:0}
+.nt-bar{margin-top:14px}
+.mute-list{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px;max-width:760px}
+.mute-list li{padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.switch-s{display:flex;align-items:center;gap:12px;cursor:pointer;position:relative;font-size:14.5px}
+.switch-s input{position:absolute;opacity:0;width:44px;height:26px;margin:0;cursor:pointer}
+.switch-s .knob{flex:0 0 auto;width:44px;height:26px;border-radius:999px;background:#cfc8b8;position:relative;transition:background .25s}
+.switch-s .knob::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .25s var(--ease)}
+.switch-s input:checked + .knob{background:var(--navy)}
+.switch-s input:checked + .knob::after{transform:translateX(18px)}
+.switch-s input:focus-visible + .knob{outline:3px solid var(--gold);outline-offset:2px}
+.list-rail{grid-auto-columns:clamp(240px,26vw,280px);padding-top:10px}
+.list-rail .list-card{scroll-snap-align:start}
+.upd-tag{position:absolute;top:12px;right:12px;font:700 11px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;background:var(--gold);color:var(--navy);padding:5px 8px;border-radius:5px}
+.list-card.is-updated{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.cb-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag-l.new{background:var(--gold);color:var(--navy)}
+.cbook.is-new{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.mute-t{justify-self:start;color:var(--muted);margin-top:4px}

@@ -246,10 +246,16 @@
     function doSave() {
       if (L.published && !L.items.length) { toast('Add at least one item before publishing, or switch Published off.'); q.focus(); return; }
       var empty = L.items.filter(function (it) { return !String(it.note || '').trim(); }).length;
-      L.by = ME.id; L.updated = Date.now(); L.intro = String(L.intro || '').slice(0, 300);
+      var now = Date.now(), fresh = [], before = {};
+      (saved.items || []).forEach(function (x) { before[x.id] = x; });
+      if (L.published && !saved.published) fresh.push({ at: now, kind: 'published' });
+      L.items.forEach(function (x) { if (!before[x.id]) fresh.push({ at: now, kind: 'added', item: x.id }); else if (x.essential && !before[x.id].essential) fresh.push({ at: now, kind: 'essential', item: x.id }); });
+      if (!L.published) fresh = [];
+      L.changes = (saved.changes || []).concat(fresh).slice(-50);
+      L.by = ME.id; L.updated = now; L.intro = String(L.intro || '').slice(0, 300);
       L.items.forEach(function (it) { it.note = String(it.note || '').trim().slice(0, 200); });
       LS.lists[code] = L; saveLists(); saved = JSON.parse(JSON.stringify(L)); mark();
-      toast(L.published ? 'Saved and published. The ' + followersOf(code).length + ' students on ' + code + ' can see it.' + (empty ? ' Tip: ' + empty + ' item' + (empty === 1 ? ' has' : 's have') + ' no note yet.' : '') : 'Saved as a draft. Students can’t see it yet.');
+      toast(L.published ? (fresh.length ? 'Saved. The ' + followersOf(code).length + ' students on ' + code + ' will get a notification.' : 'Saved. No notification sent: only publishing, new items and items made essential notify students.') + (empty ? ' Tip: ' + empty + ' item' + (empty === 1 ? ' has' : 's have') + ' no note yet.' : '') : 'Saved as a draft. Students can’t see it yet.');
       lastHash = location.hash;
     }
     render(); mark();
@@ -308,8 +314,8 @@
   Promise.all(['/data/books.json', '/data/reading-lists.json', '/data/admin-sample.json', '/data/messages-sample.json'].map(function (u) { return fetch(u).then(function (r) { return r.json(); }); })).then(function (d) {
     CAT = d[0]; RL = d[1]; SAMPLE = d[2]; GBMessages.init(d[3]);
     // Ignore admin data saved before students had courses (the admin page refreshes it on its next visit).
-    ADMIN = readJSON('gb-admin'); if (!ADMIN || ADMIN.v !== 1 || !(ADMIN.students || []).some(function (s) { return s.courses; })) ADMIN = null;
-    LS = readJSON('gb-lists'); if (!LS || LS.v !== 1) { LS = { v: 1, lists: JSON.parse(JSON.stringify(RL.lists)), requests: [] }; saveLists(); }
+    ADMIN = readJSON('gb-admin'); if (!ADMIN || ADMIN.v !== 1 || ADMIN.sv !== (SAMPLE.version || 1)) ADMIN = null;
+    LS = readJSON('gb-lists'); if (!LS || LS.v !== 1 || LS.sv !== (RL.version || 1)) { LS = { v: 1, sv: RL.version || 1, lists: JSON.parse(JSON.stringify(RL.lists)), requests: [] }; saveLists(); }
     var rec = (ADMIN ? ADMIN.lecturers : SAMPLE.lecturers).filter(function (l) { return l.id === RL.lecturer; })[0] || SAMPLE.lecturers[0];
     ME = { id: rec.id, name: rec.name, courses: rec.courses.slice(), status: rec.status };
     route();
