@@ -1,0 +1,35 @@
+{
+ "note": "Sample messages between the librarian and lecturers. Fictional.",
+ "threads": {
+  "DEMO-T-0007": [
+   {
+    "text": "Good morning. Could the bookshop stock printed copies of Introductory Statistics for STAT 201? About 30 students will want hard copies.",
+    "daysAgo": 6,
+    "time": "09:12",
+    "from": "lecturer"
+   },
+   {
+    "text": "Good morning, Dr. Mensah. Yes, we've ordered 30 copies. They should arrive next week.",
+    "daysAgo": 6,
+    "time": "11:40",
+    "from": "librarian"
+   },
+   {
+    "text": "The printed copies are in. They're on the shelf and in the shop now.",
+    "daysAgo": 1,
+    "time": "10:05",
+    "book": "intro-stats",
+    "from": "librarian"
+   }
+  ],
+  "DEMO-T-0012": [
+   {
+    "text": "Please can we add Principles of Management to the BUS 101 list as optional reading? Is it in stock?",
+    "daysAgo": 0,
+    "time": "08:31",
+    "book": "management",
+    "from": "lecturer"
+   }
+  ]
+ }
+}

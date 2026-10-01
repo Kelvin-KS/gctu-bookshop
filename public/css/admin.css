@@ -175,3 +175,83 @@
 }
 @media (prefers-reduced-motion:reduce){.chart .bar{transition:none}}
 .req-msg{display:block;font-style:italic;margin-top:2px}
+
+/* ---------- fixed sidebar, scrolling work area, pinned page header ---------- */
+@media(min-width:861px){
+  body.adm{height:100vh;overflow:hidden;display:flex;flex-direction:column}
+  .adm-demo{flex:0 0 auto}
+  .adm-shell{flex:1 1 auto;min-height:0}
+  .adm-side{position:relative;height:auto;align-self:stretch;overflow-y:auto}
+  .adm-main{height:100%;overflow-y:auto;overscroll-behavior:contain;padding-top:0;scroll-padding-top:110px}
+}
+.adm-head{position:sticky;top:0;z-index:15;background:var(--sl-bg);padding-top:26px;padding-bottom:14px;margin-bottom:14px;transition:box-shadow .25s,border-color .25s;border-bottom:1px solid transparent}
+.adm-head.is-stuck{box-shadow:0 12px 18px -16px rgba(21,34,41,.45);border-bottom-color:var(--sl-line)}
+@media(min-width:861px){.adm-head{margin-inline:-30px;padding-inline:30px}}
+@media(max-width:860px){
+  .adm-head{top:52px;margin-inline:-16px;padding:14px 16px 12px;margin-bottom:12px}
+  .adm-head h1{font-size:22px}
+  .adm-head p{font-size:13.5px}
+  .adm-head.is-stuck p{display:none}
+  .adm-actions .btn{padding:8px 12px;font-size:13.5px}
+}
+
+/* ---------- messages ---------- */
+.msg-layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:14px;align-items:start}
+.msg-threads{background:#fff;border:1px solid var(--sl-line);border-radius:14px;padding:10px;display:grid;gap:8px}
+.msg-new select{width:100%;font:inherit;font-size:14px;padding:9px 10px;border-radius:10px;border:1.5px solid var(--sl-line);background:#fff;color:var(--sl-ink)}
+.msg-tlist{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.msg-ti{position:relative;display:grid;gap:2px;padding:10px 12px;border-radius:10px;text-decoration:none;color:inherit;transition:background .15s}
+.msg-ti:hover{background:var(--sl-bg)}
+.msg-ti.on{background:var(--sl-soft)}
+.msg-ti-top{display:flex;justify-content:space-between;gap:8px}
+.msg-ti-top small{color:var(--sl-muted);white-space:nowrap}
+.msg-ti-prev{font-size:13px;color:var(--sl-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:26px}
+.msg-ti.unread b,.msg-ti.unread .msg-ti-prev{color:var(--sl-ink);font-weight:700}
+.msg-ti .n{position:absolute;right:10px;bottom:10px;min-width:20px;padding:1px 6px;border-radius:999px;background:var(--gold);color:var(--sl);font:700 11.5px/1.5 var(--sans);text-align:center}
+.msg-pick{padding:40px 10px;text-align:center}
+.msg-back{display:none;margin-bottom:8px}
+.msg-solo{max-width:760px}
+.msg-thread{background:#fff;border:1px solid var(--sl-line);border-radius:14px;display:grid;overflow:hidden}
+.msg-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--sl-line)}
+.msg-av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--sl);color:#fff;font-weight:700;font-size:13px;flex:0 0 auto}
+.msg-head b{display:block}
+.msg-head span{font-size:12.5px;color:var(--sl-muted)}
+.msg-list{list-style:none;margin:0;padding:14px;display:flex;flex-direction:column;gap:10px;max-height:min(56vh,520px);min-height:220px;overflow-y:auto;background:var(--sl-bg)}
+.msg-day{align-self:center;font:700 11px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--sl-muted);background:#fff;padding:5px 9px;border-radius:999px;border:1px solid var(--sl-line)}
+.msg-empty{align-self:center;color:var(--sl-muted);padding:30px 0}
+.msg-item{display:grid;gap:3px;max-width:78%;animation:admIn .3s var(--ease)}
+.msg-item.mine{align-self:flex-end;justify-items:end}
+.msg-item.theirs{align-self:flex-start}
+.bub{padding:10px 13px;border-radius:14px;font-size:14.5px;line-height:1.45;display:grid;gap:8px}
+.bub p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg-item.theirs .bub{background:#fff;border:1px solid var(--sl-line);border-bottom-left-radius:4px}
+.msg-item.mine .bub{background:var(--sl);color:#fff;border-bottom-right-radius:4px}
+.msg-item.is-new .bub{box-shadow:0 0 0 2px var(--gold)}
+.msg-meta{font-size:11.5px;color:var(--sl-muted)}
+.msg-book{display:flex;gap:10px;align-items:center;padding:7px 9px;border-radius:10px;background:rgba(255,255,255,.92);color:var(--sl-ink);text-decoration:none;border:1px solid var(--sl-line);transition:border-color .2s}
+.msg-book:hover{border-color:var(--gold)}
+.msg-book img{border-radius:3px;object-fit:cover;flex:0 0 auto}
+.msg-book b{display:block;font-size:13.5px}
+.msg-book small{color:var(--sl-muted);font-size:12px}
+.msg-compose{display:grid;gap:8px;padding:12px 14px;border-top:1px solid var(--sl-line)}
+.msg-compose textarea{font:inherit;font-size:15px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--sl-line);resize:none;width:100%;min-height:46px;color:var(--sl-ink)}
+.msg-compose textarea:focus{outline:0;border-color:var(--sl-2);box-shadow:0 0 0 4px rgba(44,84,99,.12)}
+.msg-row{display:flex;align-items:center;gap:10px}
+.msg-count{margin-left:auto;font-size:12px;color:var(--sl-muted)}
+.msg-chip{display:inline-flex;align-items:center;gap:6px;justify-self:start;padding:5px 6px 5px 10px;border-radius:999px;background:var(--sl-soft);font-size:13px;font-weight:700}
+.msg-chip button{border:0;background:#fff;width:22px;height:22px;border-radius:50%;font-size:15px;line-height:1;color:var(--sl)}
+.msg-picker{display:grid;gap:6px}
+.msg-picker input{font:inherit;font-size:14px;padding:8px 10px;border-radius:9px;border:1.5px solid var(--sl-line)}
+.msg-res{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.msg-res button{display:grid;gap:1px;width:100%;text-align:left;padding:7px 10px;border:1px solid var(--sl-line);border-radius:9px;background:#fff}
+.msg-res button:hover,.msg-res button:focus-visible{border-color:var(--sl-2);background:var(--sl-soft)}
+.msg-res small{color:var(--sl-muted)}
+.msg-hint{margin:0;font-size:12px;color:var(--sl-muted)}
+.msg-peek{margin:8px 0 2px;font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media(max-width:860px){
+  .msg-layout{grid-template-columns:minmax(0,1fr)}
+  .msg-layout.has-thread .msg-threads{display:none}
+  .msg-layout.has-thread .msg-back{display:inline-flex}
+  .msg-item{max-width:90%}
+  .msg-list{max-height:60vh}
+}

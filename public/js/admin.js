@@ -54,7 +54,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDrawer(); });
 
   // ---------- data ----------
-  var CAT, SAMPLE, ST;
+  var CAT, SAMPLE, ST, MSAMPLE;
   var KEY = 'gb-admin';
   function save() { try { localStorage.setItem(KEY, JSON.stringify(ST)); } catch (e) { toast('This browser blocked saving, so changes will be lost on refresh.'); } }
   function seed() {
@@ -101,21 +101,26 @@
 
   // ---------- routing ----------
   var main = document.getElementById('adm-main');
-  var VIEWS = { dashboard: dashboard, orders: orders, books: books, people: people, promotions: promotions, requests: requests, settings: settings };
+  var VIEWS = { dashboard: dashboard, orders: orders, books: books, people: people, promotions: promotions, messages: messages, requests: requests, settings: settings };
   function route() {
     var v = (location.hash || '#dashboard').slice(1).split('/')[0]; if (!VIEWS[v]) v = 'dashboard';
     document.querySelectorAll('#adm-nav a[data-v]').forEach(function (a) { if (a.dataset.v === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     closeDrawer(); main.replaceChildren(); VIEWS[v](); badges();
     document.title = (v[0].toUpperCase() + v.slice(1)) + ' · Admin · GCTU Bookshop';
     if (!reduce) { main.classList.remove('enter'); void main.offsetWidth; main.classList.add('enter'); }
-    window.scrollTo(0, 0); main.focus({ preventScroll: true });
+    main.scrollTop = 0; window.scrollTo(0, 0); main.focus({ preventScroll: true }); stuck();
   }
   function badges() {
     var n = ST.orders.filter(function (o) { return o.status === 'paid'; }).length, r = ST.requests.filter(function (q) { return q.status === 'waiting'; }).length;
+    var m = window.GBMessages ? GBMessages.unread('librarian') : 0, mm = document.getElementById('n-msgs');
+    mm.textContent = m || ''; mm.hidden = !m; mm.setAttribute('aria-label', m + ' unread');
     var a = document.getElementById('n-orders'), b = document.getElementById('n-requests');
     a.textContent = n || ''; a.hidden = !n; a.setAttribute('aria-label', n + ' to pack');
     b.textContent = r || ''; b.hidden = !r; b.setAttribute('aria-label', r + ' waiting');
   }
+  // The page header stays pinned while the work area scrolls; it gets a shadow once content passes under it.
+  function stuck() { var h = main.querySelector('.adm-head'); if (h) h.classList.toggle('is-stuck', main.scrollTop > 4 || window.scrollY > 4); }
+  main.addEventListener('scroll', stuck, { passive: true }); window.addEventListener('scroll', stuck, { passive: true });
   function head(title, sub, actions) {
     var h = el('header', 'adm-head'); var t = el('div'); t.appendChild(el('h1', null, title)); if (sub) t.appendChild(el('p', null, sub)); h.appendChild(t);
     if (actions) { var a = el('div', 'adm-actions'); actions.forEach(function (x) { a.appendChild(x); }); h.appendChild(a); }
@@ -178,6 +183,7 @@
     var ul = el('ul', 'attn');
     toPack.slice(0, 4).forEach(function (o) { var li = el('li'); var a = el('a', null, o.id + ' · ' + student(o.student).name); a.href = '#orders/open/' + o.id; li.appendChild(pill('To pack', 'warn')); li.appendChild(a); ul.appendChild(li); });
     low.slice(0, 4).forEach(function (b) { var li = el('li'); var a = el('a', null, (b.title || b.name) + ' · ' + b.stock + ' left'); a.href = '#books/low'; li.appendChild(pill(b.stock === 0 ? 'Out' : 'Low', b.stock === 0 ? 'bad' : 'warn')); li.appendChild(a); ul.appendChild(li); });
+    ST.lecturers.forEach(function (l) { var n = GBMessages.unread('librarian', l.id); if (!n) return; var li = el('li'); var a = el('a', null, 'Message from ' + l.name); a.href = '#messages/' + l.id; li.appendChild(pill(n + ' new', 'info')); li.appendChild(a); ul.insertBefore(li, ul.firstChild); });
     waiting.slice(0, 3).forEach(function (r) { var li = el('li'); var a = el('a', null, r.title); a.href = '#requests'; li.appendChild(pill('Request', 'info')); li.appendChild(a); ul.appendChild(li); });
     if (!ul.children.length) ul.appendChild(el('li', null, 'All clear.'));
     att.appendChild(ul); grid.appendChild(att);
@@ -361,10 +367,11 @@
     function render() {
       host.replaceChildren(); var term = q.value.trim().toLowerCase(), today = isoDay(Date.now());
       if (tab === 'students') {
-        var T = tableWrap([['Name'], ['Student ID'], ['Programme'], ['Level', 'num'], ['Access until'], ['Status']]);
+        var T = tableWrap([['Name'], ['Student ID'], ['Programme'], ['Level', 'num'], ['Courses'], ['Access until'], ['Status']]);
         ST.students.filter(function (s) { return !term || (s.name + ' ' + s.id).toLowerCase().indexOf(term) >= 0; }).forEach(function (s) {
           var tr = el('tr'); tr.appendChild(el('td', null, s.name)); var idc = el('td'); idc.appendChild(el('code', null, s.id)); tr.appendChild(idc);
           tr.appendChild(el('td', 'muted-a', s.programme)); tr.appendChild(el('td', 'num', String(s.level)));
+          var sc = el('td'); (s.courses || []).forEach(function (c) { sc.appendChild(el('span', 'tag-a', c)); }); tr.appendChild(sc);
           var gd = input('date', s.graduates, { 'aria-label': 'Graduation date for ' + s.name }); gd.className = 'date-in';
           gd.addEventListener('change', function () { if (!gd.value) return; s.graduates = gd.value; save(); toast('Access for ' + s.name + ' now ends ' + new Date(gd.value).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + '.'); render(); });
           var tdg = el('td'); tdg.appendChild(gd); tr.appendChild(tdg);
@@ -397,9 +404,10 @@
   function addStudent() {
     drawer('Add a student', function (b) {
       var f = el('form'); f.noValidate = true;
+      var courses = input('text', '', { placeholder: 'e.g. CSC 205, STAT 201' });
       var name = input('text'), sid = input('text', '', { autocapitalize: 'characters', spellcheck: 'false' }), prog = input('text', 'BSc Computer Science'), lvl = select([['100', 'Level 100'], ['200', 'Level 200'], ['300', 'Level 300'], ['400', 'Level 400']], '100'), grad = input('date', (new Date().getFullYear() + 4) + '-07-31');
       f.appendChild(field('Full name', name, null, 'ns-n')); f.appendChild(field('Student ID', sid, 'In the demo, start IDs with DEMO- so no real ID is ever entered.', 'ns-i'));
-      f.appendChild(field('Programme', prog, null, 'ns-p')); f.appendChild(field('Level', lvl, null, 'ns-l')); f.appendChild(field('Access until (graduation)', grad, null, 'ns-g'));
+      f.appendChild(field('Programme', prog, null, 'ns-p')); f.appendChild(field('Level', lvl, null, 'ns-l')); f.appendChild(field('Access until (graduation)', grad, null, 'ns-g')); f.appendChild(field('Courses this semester', courses, 'Separate course codes with commas. Lecturers only see data for students on their courses.', 'ns-c'));
       var go = el('button', 'btn slate', 'Add student'); go.type = 'submit'; f.appendChild(go);
       f.addEventListener('submit', function (e) {
         e.preventDefault(); [name, sid, grad].forEach(function (i) { setErr(i, ''); });
@@ -408,8 +416,10 @@
         if (!/^DEMO-/.test(v) || !idOk(v)) { setErr(sid, 'Use a demo ID like DEMO-S-2001 (letters, numbers and dashes).'); bad = bad || sid; }
         else if (ST.students.some(function (s) { return s.id === v; })) { setErr(sid, 'A student with this ID already exists.'); bad = bad || sid; }
         if (!grad.value) { setErr(grad, 'Choose a date.'); bad = bad || grad; }
+        var cl = courses.value.split(',').map(function (c) { return c.trim().toUpperCase(); }).filter(Boolean); setErr(courses, '');
+        if (cl.some(function (c) { return !/^[A-Z]{2,5} ?\d{3}$/.test(c); })) { setErr(courses, 'Use course codes like CSC 205, separated by commas.'); bad = bad || courses; }
         if (bad) { bad.focus(); return; }
-        ST.students.unshift({ id: v, name: name.value.trim(), programme: prog.value.trim(), level: +lvl.value, graduates: grad.value }); save();
+        ST.students.unshift({ id: v, name: name.value.trim(), programme: prog.value.trim(), level: +lvl.value, graduates: grad.value, courses: cl }); save();
         toast(name.value.trim() + ' added.'); closeDrawer(); history.replaceState(null, '', '#people/students'); route();
       });
       b.appendChild(f);
@@ -531,6 +541,53 @@
     });
   }
 
+  // ================= MESSAGES =================
+  function messages() {
+    GBMessages.reload();
+    var id = location.hash.split('/')[1] || null;
+    head('Messages', 'Conversations with lecturers. Students’ messages join here in stage 3.');
+    var wrap = el('div', 'msg-layout'), side = el('aside', 'msg-threads'), pane = el('div', 'msg-pane');
+    var newRow = el('div', 'msg-new'), sel = el('select'); sel.setAttribute('aria-label', 'Start a conversation with');
+    var o0 = el('option', null, 'Message a lecturer…'); o0.value = ''; sel.appendChild(o0);
+    ST.lecturers.filter(function (l) { return l.status !== 'off'; }).forEach(function (l) { var o = el('option', null, l.name + ' · ' + l.department); o.value = l.id; sel.appendChild(o); });
+    sel.addEventListener('change', function () { if (sel.value) location.hash = '#messages/' + sel.value; });
+    newRow.appendChild(sel); side.appendChild(newRow);
+    var lst = el('ul', 'msg-tlist'); side.appendChild(lst);
+    function drawList() {
+      lst.replaceChildren();
+      var ids = Object.keys(GBMessages.threads()).filter(function (k) { return GBMessages.last(k); }).sort(function (a, b) { return GBMessages.last(b).at - GBMessages.last(a).at; });
+      if (!ids.length) lst.appendChild(el('li', 'muted-a', 'No conversations yet.'));
+      ids.forEach(function (k) {
+        var l = ST.lecturers.filter(function (x) { return x.id === k; })[0]; if (!l) return;
+        var m = GBMessages.last(k), n = GBMessages.unread('librarian', k);
+        var li = el('li'), a = el('a', 'msg-ti' + (k === id ? ' on' : '') + (n ? ' unread' : '')); a.href = '#messages/' + k;
+        if (k === id) a.setAttribute('aria-current', 'true');
+        var top = el('span', 'msg-ti-top'); top.appendChild(el('b', null, l.name)); top.appendChild(el('small', null, GBMessages.when(m.at))); a.appendChild(top);
+        a.appendChild(el('span', 'msg-ti-prev', (m.from === 'librarian' ? 'You: ' : '') + (m.text || (m.book ? 'Attached a book' : ''))));
+        if (n) a.appendChild(el('span', 'n', String(n)));
+        li.appendChild(a); lst.appendChild(li);
+      });
+    }
+    wrap.appendChild(side); wrap.appendChild(pane); main.appendChild(wrap);
+    var lec = id && ST.lecturers.filter(function (x) { return x.id === id; })[0];
+    if (lec) {
+      wrap.classList.add('has-thread');
+      var back = el('a', 'see msg-back', '← All conversations'); back.href = '#messages'; pane.appendChild(back);
+      var host = el('div'); pane.appendChild(host);
+      GBMessages.render(host, {
+        role: 'librarian', id: lec.id, otherName: lec.name, otherSub: lec.department + ' · ' + lec.courses.join(', ') + (lec.status === 'off' ? ' · account switched off' : ''), avatar: lec.name.replace(/^(Dr|Mrs|Mr|Prof|Ms)\.\s*/, '').split(/[\s.]+/).filter(Boolean).map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase(),
+        findBook: function (bid) { var b = book(bid); if (b) return { name: b.title, sub: b.author + ' · stock ' + b.stock, img: b.cover || b.art || null, href: '#books' }; var e = ess(bid); return e ? { name: e.name, sub: 'Campus essentials · stock ' + e.stock, img: e.img, href: '#books/ess' } : null; },
+        searchBooks: searchCatalogue, toast: toast, onChange: function () { drawList(); badges(); }
+      });
+    } else pane.appendChild(el('p', 'msg-pick muted-a', 'Choose a conversation, or message a lecturer.'));
+    drawList();
+  }
+  function searchCatalogue(term) {
+    term = term.toLowerCase();
+    return allBooks().filter(function (b) { return (b.title + ' ' + b.author + ' ' + (b.course || '')).toLowerCase().indexOf(term) >= 0; }).map(function (b) { return { id: b.id, name: b.title, sub: b.author }; })
+      .concat(allEss().filter(function (e) { return e.name.toLowerCase().indexOf(term) >= 0; }).map(function (e) { return { id: e.id, name: e.name, sub: 'Campus essentials' }; }));
+  }
+
   // ================= REQUESTS =================
   function requests() {
     head('Book requests', 'Students ask for titles we don’t stock. Your reply appears in their messages (stage 3).');
@@ -557,8 +614,8 @@
       sheet();
       function sheet() {
         drawer('Reset the demo?', function (b) {
-          b.appendChild(el('p', null, 'This puts back the original sample orders, stock, people and promotions. It only affects this browser.'));
-          var row = el('div', 'btns'); row.appendChild(btn('Reset demo data', 'danger', function () { try { localStorage.removeItem(KEY); } catch (e) {} seed(); closeDrawer(); toast('Demo data reset.'); location.hash = '#dashboard'; route(); }));
+          b.appendChild(el('p', null, 'This puts back the original sample orders, stock, people, promotions, reading lists and messages. It only affects this browser.'));
+          var row = el('div', 'btns'); row.appendChild(btn('Reset demo data', 'danger', function () { try { ['gb-msgs', 'gb-lists'].forEach(function (k) { localStorage.removeItem(k); }); localStorage.removeItem(KEY); } catch (e) {} seed(); GBMessages.init(MSAMPLE); closeDrawer(); toast('Demo data reset.'); location.hash = '#dashboard'; route(); }));
           row.appendChild(btn('Keep my changes', 'line', closeDrawer)); b.appendChild(row);
         });
       }
@@ -567,10 +624,10 @@
   }
 
   // ---------- start ----------
-  Promise.all([fetch('/data/books.json').then(function (r) { return r.json(); }), fetch('/data/admin-sample.json').then(function (r) { return r.json(); })]).then(function (d) {
-    CAT = d[0]; SAMPLE = d[1];
+  Promise.all(['/data/books.json', '/data/admin-sample.json', '/data/messages-sample.json'].map(function (u) { return fetch(u).then(function (r) { return r.json(); }); })).then(function (d) {
+    CAT = d[0]; SAMPLE = d[1]; MSAMPLE = d[2]; GBMessages.init(d[2]);
     try { ST = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { ST = null; }
-    if (!ST || ST.v !== 1) seed();
+    if (!ST || ST.v !== 1 || !ST.students[0].courses) seed();
     // Requests lecturers sent from the Faculty desk (same browser) join the librarian's list.
     try { var gl = JSON.parse(localStorage.getItem('gb-lists') || 'null'); (gl && gl.requests || []).forEach(function (r) { if (!ST.requests.some(function (x) { return x.id === r.id; })) ST.requests.push({ id: String(r.id), student: String(r.student), title: String(r.title).slice(0, 160), format: String(r.format), status: 'waiting', note: '', at: Number(r.at) || Date.now(), message: String(r.message || '').slice(0, 300) }); }); save(); } catch (e) {}
     window.addEventListener('hashchange', route); route();

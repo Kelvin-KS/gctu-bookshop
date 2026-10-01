@@ -54,33 +54,38 @@
     return null;
   }
   function courseName(c) { return (RL.courses[c] || {}).name || c; }
+  // Only students on this lecturer's courses count (set by the librarian), and only current ones.
+  function roster() { var today = new Date().toISOString().slice(0, 10); return (ADMIN ? ADMIN.students : SAMPLE.students).filter(function (s) { return (s.graduates || '9999') >= today; }); }
+  function followersOf(code) { return roster().filter(function (s) { return (s.courses || []).indexOf(code) >= 0; }); }
+  function myStudentIds() { var ids = {}; ME.courses.forEach(function (c) { followersOf(c).forEach(function (s) { ids[s.id] = 1; }); }); return ids; }
   function myLists() { return ME.courses.map(function (c) { return { code: c, list: LS.lists[c] || null }; }); }
   // Distinct students who bought each item (counts only; never names), from the bookshop's orders.
   function buyers() {
-    var orders = ADMIN && ADMIN.orders ? ADMIN.orders : SAMPLE.orders, map = {};
-    orders.forEach(function (o) { o.items.forEach(function (it) { (map[it.id] = map[it.id] || {})[o.student] = 1; }); });
+    var orders = ADMIN && ADMIN.orders ? ADMIN.orders : SAMPLE.orders, map = {}, mine = myStudentIds();
+    orders.forEach(function (o) { if (!mine[o.student]) return; o.items.forEach(function (it) { (map[it.id] = map[it.id] || {})[o.student] = 1; }); });
     var out = {}; Object.keys(map).forEach(function (k) { out[k] = Object.keys(map[k]).length; }); return out;
   }
   function courseHave(code) {
     var l = LS.lists[code]; if (!l) return 0;
-    var orders = ADMIN && ADMIN.orders ? ADMIN.orders : SAMPLE.orders, ids = l.items.map(function (i) { return i.id; }), s = {};
-    orders.forEach(function (o) { if (o.items.some(function (it) { return ids.indexOf(it.id) >= 0; })) s[o.student] = 1; });
-    return Math.min(Object.keys(s).length, (RL.courses[code] || {}).followers || 0);
+    var orders = ADMIN && ADMIN.orders ? ADMIN.orders : SAMPLE.orders, ids = l.items.map(function (i) { return i.id; }), s = {}, on = {};
+    followersOf(code).forEach(function (st) { on[st.id] = 1; });
+    orders.forEach(function (o) { if (on[o.student] && o.items.some(function (it) { return ids.indexOf(it.id) >= 0; })) s[o.student] = 1; });
+    return Object.keys(s).length;
   }
 
   // ---------- routing ----------
   var main = document.getElementById('adm-main');
-  var VIEWS = { overview: overview, lists: lists, request: request, add: addFromShop };
+  var VIEWS = { overview: overview, lists: lists, messages: messages, request: request, add: addFromShop };
   function route() {
     var parts = (location.hash || '#overview').slice(1).split('/'), v = VIEWS[parts[0]] ? parts[0] : 'overview';
     document.querySelectorAll('#adm-nav a[data-v]').forEach(function (a) { if (a.dataset.v === v || (v === 'add' && a.dataset.v === 'lists')) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     if (dirty && !confirmLeave()) return;
     closeDrawer(); main.replaceChildren();
     if (ME.status === 'off') { switchedOff(); return; }
-    VIEWS[v](parts);
-    document.title = (v === 'lists' ? 'Reading lists' : v === 'request' ? 'Request a book' : 'Overview') + ' · Faculty desk · GCTU Bookshop';
+    VIEWS[v](parts); badge();
+    document.title = ({ lists: 'Reading lists', request: 'Request a book', messages: 'Messages' }[v] || 'Overview') + ' · Faculty desk · GCTU Bookshop';
     if (!reduce) { main.classList.remove('enter'); void main.offsetWidth; main.classList.add('enter'); }
-    window.scrollTo(0, 0); main.focus({ preventScroll: true });
+    main.scrollTop = 0; window.scrollTo(0, 0); main.focus({ preventScroll: true }); stuck();
   }
   var dirty = false, lastHash = location.hash;
   function confirmLeave() {
@@ -89,10 +94,25 @@
   }
   window.addEventListener('hashchange', function () { route(); if (!dirty) lastHash = location.hash; });
   window.addEventListener('beforeunload', function (e) { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+  // The page header stays pinned while the work area scrolls; it gets a shadow once content passes under it.
+  function stuck() { var h = main.querySelector('.adm-head'); if (h) h.classList.toggle('is-stuck', main.scrollTop > 4 || window.scrollY > 4); }
+  main.addEventListener('scroll', stuck, { passive: true }); window.addEventListener('scroll', stuck, { passive: true });
   function head(title, sub, actions) {
     var h = el('header', 'adm-head'), t = el('div'); t.appendChild(el('h1', null, title)); if (sub) t.appendChild(el('p', null, sub)); h.appendChild(t);
     if (actions) { var a = el('div', 'adm-actions'); actions.forEach(function (x) { a.appendChild(x); }); h.appendChild(a); }
     main.appendChild(h);
+  }
+  function badge() { var n = GBMessages.unread('lecturer', ME.id), b = document.getElementById('n-msgs'); b.textContent = n || ''; b.hidden = !n; b.setAttribute('aria-label', n + ' unread'); }
+  function messages() {
+    GBMessages.reload();
+    head('Messages', 'Write to the librarian about stock, a book you need, or your reading lists.');
+    var host = el('div', 'msg-solo'); main.appendChild(host);
+    GBMessages.render(host, {
+      role: 'lecturer', id: ME.id, otherName: 'The librarian', otherSub: 'GCTU Bookshop · usually replies within a working day', avatar: 'LB',
+      findBook: function (id) { var x = thing(id); return x ? { name: x.name, sub: x.sub + ' · ' + x.price, img: x.img, href: x.kind === 'book' ? '/book/?id=' + encodeURIComponent(id) : '/browse/?genre=essentials' } : null; },
+      searchBooks: function (term) { term = term.toLowerCase(); return CAT.books.filter(function (b) { return (b.title + ' ' + b.author + ' ' + (b.course || '')).toLowerCase().indexOf(term) >= 0; }).map(function (b) { return { id: b.id, name: b.title, sub: b.author }; }).concat(CAT.essentials.filter(function (e) { return e.name.toLowerCase().indexOf(term) >= 0; }).map(function (e) { return { id: e.id, name: e.name, sub: 'Campus essentials' }; })); },
+      toast: toast, onChange: badge
+    });
   }
   function switchedOff() {
     head('Your account is switched off', 'The librarian has switched off this staff account, so you can’t edit reading lists. Your lists are hidden from students.');
@@ -107,15 +127,15 @@
     head((hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening') + ', ' + ME.name,
       published.length + ' of your ' + mine.length + ' courses have a reading list.' + (missing.length ? ' ' + missing.map(function (m) { return m.code; }).join(', ') + ' still need' + (missing.length === 1 ? 's' : '') + ' one.' : ''),
       [btn('+ New reading list', 'slate', function () { var m = missing[0] || mine[0]; location.hash = '#lists/' + slug(m.code); })]);
-    var followers = mine.reduce(function (n, m) { return n + ((RL.courses[m.code] || {}).followers || 0); }, 0);
+    var followers = Object.keys(myStudentIds()).length;
     var have = mine.reduce(function (n, m) { return n + courseHave(m.code); }, 0);
     var k = el('section', 'kpis k4'); k.setAttribute('aria-label', 'At a glance');
-    [[mine.length, 'courses this semester'], [published.length, 'reading lists published'], [followers, 'students following your courses'], [have, 'have bought a listed book']].forEach(function (x) { var d = el('div', 'kpi'); d.appendChild(el('b', null, String(x[0]))); d.appendChild(el('span', null, x[1])); k.appendChild(d); });
+    [[mine.length, 'courses this semester'], [published.length, 'reading lists published'], [followers, 'students on your courses'], [have, 'bought from your lists']].forEach(function (x) { var d = el('div', 'kpi'); d.appendChild(el('b', null, String(x[0]))); d.appendChild(el('span', null, x[1])); k.appendChild(d); });
     main.appendChild(k);
     main.appendChild(el('h2', 'sec-h', 'Your courses'));
     var cards = el('div', 'courses-f');
     mine.forEach(function (m) {
-      var c = RL.courses[m.code] || {}, l = m.list, n = l ? l.items.length : 0, h = courseHave(m.code), f = c.followers || 0;
+      var c = RL.courses[m.code] || {}, l = m.list, n = l ? l.items.length : 0, h = courseHave(m.code), f = followersOf(m.code).length;
       var a = el('a', 'course-f' + (n ? '' : ' empty')); a.href = '#lists/' + slug(m.code);
       a.appendChild(el('span', 'cc', m.code)); a.appendChild(el('b', null, c.name || m.code));
       a.appendChild(el('span', 'm', f + ' students · ' + (n ? n + ' item' + (n === 1 ? '' : 's') + ' listed' : 'no reading list yet')));
@@ -135,8 +155,14 @@
     var ul = el('ul', 'buys');
     rows.forEach(function (r) { var li = el('li'), top = el('div', 'row'); top.appendChild(el('b', null, r[0])); top.appendChild(el('span', null, r[1] + ' student' + (r[1] === 1 ? '' : 's'))); li.appendChild(top); var m = el('div', 'meter'), i = el('i'); m.appendChild(i); li.appendChild(m); ul.appendChild(li); setTimeout(function () { i.style.width = (r[1] / max * 100) + '%'; }, reduce ? 0 : 250); });
     if (!rows.length) ul.appendChild(el('li', null, 'Add books to a reading list to see this.'));
-    buy.appendChild(ul); buy.appendChild(el('p', 'note-s', 'Counts only. You never see which student bought what.'));
+    buy.appendChild(ul); buy.appendChild(el('p', 'note-s', 'Only students on your courses are counted, and only as numbers. You never see which student bought what.'));
     grid.appendChild(buy);
+    var lm = GBMessages.last(ME.id), un = GBMessages.unread('lecturer', ME.id);
+    var mc = el('section', 'card-a'); mc.appendChild(el('h2', null, 'Messages with the librarian'));
+    if (lm) { if (un) mc.appendChild(pill(un + ' new', 'info')); mc.appendChild(el('p', 'msg-peek', (lm.from === 'lecturer' ? 'You: ' : 'Librarian: ') + (lm.text || 'Attached a book'))); mc.appendChild(el('p', 'note-s', GBMessages.when(lm.at))); }
+    else mc.appendChild(el('p', null, 'No messages yet.'));
+    var ml = el('a', 'see', (un ? 'Read and reply' : 'Open messages') + ' →'); ml.href = '#messages'; mc.appendChild(ml);
+    grid.appendChild(mc);
     var help = el('section', 'card-a'); help.appendChild(el('h2', null, 'How reading lists work'));
     var ol = el('ol', 'how-f');
     ['Pick books from the catalogue and add a short note on why each one matters.', 'Mark each as Essential or Optional, then publish.', 'Students following the course see “Recommended by your lecturer” and can add the whole list to their cart.', 'Missing a book? Request it and the librarian will reply.'].forEach(function (s) { ol.appendChild(el('li', null, s)); });
@@ -166,7 +192,7 @@
     var L = JSON.parse(JSON.stringify(saved));
     var preview = el('a', 'btn line', 'Preview as a student ↗'); preview.href = '/course/?code=' + slug(code); preview.target = '_blank'; preview.rel = 'noopener';
     var saveB = btn('Save list', 'slate', doSave), discard = btn('Discard changes', 'line', function () { dirty = false; route(); });
-    head(code + ' · ' + courseName(code), ((RL.courses[code] || {}).followers || 0) + ' students follow this course.', [preview, discard, saveB]);
+    head(code + ' · ' + courseName(code), followersOf(code).length + ' students are on this course.', [preview, discard, saveB]);
     var status = el('p', 'save-state'); status.setAttribute('aria-live', 'polite'); main.appendChild(status);
     function mark() { dirty = JSON.stringify(L) !== JSON.stringify(saved); status.textContent = dirty ? 'Unsaved changes' : (saved.items.length ? 'All changes saved' : ''); status.classList.toggle('is-dirty', dirty); discard.hidden = !dirty; }
     var top = el('div', 'card-a ed-top');
@@ -223,7 +249,7 @@
       L.by = ME.id; L.updated = Date.now(); L.intro = String(L.intro || '').slice(0, 300);
       L.items.forEach(function (it) { it.note = String(it.note || '').trim().slice(0, 200); });
       LS.lists[code] = L; saveLists(); saved = JSON.parse(JSON.stringify(L)); mark();
-      toast(L.published ? 'Saved and published. ' + ((RL.courses[code] || {}).followers || 0) + ' students can see it.' + (empty ? ' Tip: ' + empty + ' item' + (empty === 1 ? ' has' : 's have') + ' no note yet.' : '') : 'Saved as a draft. Students can’t see it yet.');
+      toast(L.published ? 'Saved and published. The ' + followersOf(code).length + ' students on ' + code + ' can see it.' + (empty ? ' Tip: ' + empty + ' item' + (empty === 1 ? ' has' : 's have') + ' no note yet.' : '') : 'Saved as a draft. Students can’t see it yet.');
       lastHash = location.hash;
     }
     render(); mark();
@@ -279,8 +305,8 @@
   }
 
   // ---------- start ----------
-  Promise.all(['/data/books.json', '/data/reading-lists.json', '/data/admin-sample.json'].map(function (u) { return fetch(u).then(function (r) { return r.json(); }); })).then(function (d) {
-    CAT = d[0]; RL = d[1]; SAMPLE = d[2];
+  Promise.all(['/data/books.json', '/data/reading-lists.json', '/data/admin-sample.json', '/data/messages-sample.json'].map(function (u) { return fetch(u).then(function (r) { return r.json(); }); })).then(function (d) {
+    CAT = d[0]; RL = d[1]; SAMPLE = d[2]; GBMessages.init(d[3]);
     ADMIN = readJSON('gb-admin'); if (!ADMIN || ADMIN.v !== 1) ADMIN = null;
     LS = readJSON('gb-lists'); if (!LS || LS.v !== 1) { LS = { v: 1, lists: JSON.parse(JSON.stringify(RL.lists)), requests: [] }; saveLists(); }
     var rec = (ADMIN ? ADMIN.lecturers : SAMPLE.lecturers).filter(function (l) { return l.id === RL.lecturer; })[0] || SAMPLE.lecturers[0];
