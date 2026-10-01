@@ -218,48 +218,63 @@
     prev.addEventListener('click', function () { step(-1); }); next.addEventListener('click', function () { step(1); });
   }
 
-  // ---------- campus essentials + the daily student deal ----------
+  // ---------- campus essentials + student promotions ----------
+  // A promotion runs on one item for anywhere from a day to a few weeks. The librarian will
+  // schedule them in stage 4; until then the demo cycles through the sample list in books.json.
   var DAY = 86400000;
-  function todaysDeal() { return DATA.essentials[Math.floor(Date.now() / DAY) % DATA.essentials.length]; }
-  function dealPrice(e) { return Math.round(e.price * (100 - DATA.deal.percent) / 100); }
+  function currentPromo() {
+    var P = DATA.promotions, start = Date.parse(P.epoch), total = 0;
+    P.cycle.forEach(function (c) { total += c.days * DAY; });
+    var into = (Date.now() - start) % total, t0 = Date.now() - into;
+    for (var i = 0; i < P.cycle.length; i++) {
+      var c = P.cycle[i], len = c.days * DAY;
+      if (into < len) return { item: essById(c.item), percent: c.percent, days: c.days, ends: t0 + len };
+      into -= len; t0 += len;
+    }
+  }
+  function essById(id) { return DATA.essentials.filter(function (e) { return e.id === id; })[0]; }
+  function promoPrice(e, pc) { return Math.round(e.price * (100 - pc) / 100); }
   function essCard(e) {
-    var deal = todaysDeal().id === e.id;
-    var a = el('article', 'ess rv' + (deal ? ' is-deal' : ''));
+    var pr = currentPromo(), on = pr && pr.item.id === e.id;
+    var a = el('article', 'ess rv' + (on ? ' is-deal' : ''));
     var ph = el('div', 'ess-ph'); var img = el('img'); img.src = e.img; img.alt = e.name; img.loading = 'lazy'; img.decoding = 'async'; img.width = 720; img.height = 720; ph.appendChild(img);
-    if (deal) ph.appendChild(el('span', 'deal-tag', 'Today’s student deal'));
+    if (on) ph.appendChild(el('span', 'deal-tag', 'Student promo −' + pr.percent + '%'));
     a.appendChild(ph);
     var m = el('div', 'meta'); m.appendChild(el('h3', 't', e.name)); m.appendChild(el('p', 'a', e.blurb));
     var p = el('div', 'price'); p.appendChild(el('span', 'now', cedi(e.price)));
-    if (deal) p.appendChild(el('span', 'save', 'Students ' + cedi(dealPrice(e))));
+    if (on) p.appendChild(el('span', 'save', 'Students ' + cedi(promoPrice(e, pr.percent))));
     m.appendChild(p);
     m.appendChild(e.stock === 0 ? el('div', 'stock out', 'Out of stock') : e.stock <= 3 ? el('div', 'stock low', 'Only ' + e.stock + ' left') : el('div', 'stock', 'In stock'));
+    if (e.credit) m.appendChild(el('p', 'photo-credit', e.credit));
     var add = el('button', 'btn line sm add', 'Add to cart'); add.type = 'button'; add.dataset.later = 'buy'; m.appendChild(add);
     a.appendChild(m); return a;
   }
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function dealBox(host) {
-    var e = todaysDeal();
+    var pr = currentPromo(); if (!pr) return;
+    var e = pr.item;
     var box = el('div', 'deal rv');
     var ph = el('div', 'deal-ph'); var img = el('img'); img.src = e.img; img.alt = e.name; img.width = 720; img.height = 720; ph.appendChild(img); box.appendChild(ph);
     var c = el('div', 'deal-copy');
-    c.appendChild(el('p', 'eyebrow', 'Today’s student deal'));
+    c.appendChild(el('p', 'eyebrow', 'Student promotion · ' + pr.days + (pr.days === 1 ? ' day only' : ' days')));
     c.appendChild(el('h3', null, e.name));
-    var pr = el('p', 'deal-price');
-    pr.appendChild(el('span', 'now', cedi(dealPrice(e)))); pr.appendChild(el('s', null, cedi(e.price)));
-    pr.appendChild(el('span', 'save', DATA.deal.percent + '% off for students'));
-    c.appendChild(pr);
+    var row = el('p', 'deal-price');
+    row.appendChild(el('span', 'now', cedi(promoPrice(e, pr.percent)))); row.appendChild(el('s', null, cedi(e.price)));
+    row.appendChild(el('span', 'save', pr.percent + '% off for students'));
+    c.appendChild(row);
     c.appendChild(el('p', 'ends', 'Ends in'));
     var cd = el('div', 'countdown'); cd.setAttribute('role', 'timer');
-    var units = [['h', 'hours'], ['m', 'min'], ['s', 'sec']].map(function (u) { var b = el('span', 'unit'); var n = el('b', null, '00'); b.appendChild(n); b.appendChild(el('small', null, u[1])); cd.appendChild(b); return n; });
+    var units = [['d', 'days'], ['h', 'hours'], ['m', 'min'], ['s', 'sec']].map(function (u) { var b = el('span', 'unit'); var n = el('b', null, '00'); b.appendChild(n); b.appendChild(el('small', null, u[1])); cd.appendChild(b); return n; });
     c.appendChild(cd);
-    c.appendChild(el('p', 'deal-note', 'Students only, applied at checkout. ' + DATA.deal.note));
+    var endDate = new Date(pr.ends - 1).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Africa/Accra' });
+    c.appendChild(el('p', 'deal-note', 'Students only, applied at checkout. Last day: ' + endDate + ' (Accra time).'));
     var add = el('button', 'btn gold', 'Add to cart'); add.type = 'button'; add.dataset.later = 'buy'; c.appendChild(add);
     box.appendChild(c); host.appendChild(box);
     function tick() {
-      var left = Math.max(0, DAY - (Date.now() % DAY)), s = Math.floor(left / 1000);
-      var vals = [Math.floor(s / 3600), Math.floor(s % 3600 / 60), s % 60];
-      units.forEach(function (n, i) { var v = pad(vals[i]); if (n.textContent !== v) { n.textContent = v; if (!reduce && i === 2) { n.classList.remove('flip'); void n.offsetWidth; n.classList.add('flip'); } } });
-      cd.setAttribute('aria-label', 'Deal ends in ' + vals[0] + ' hours ' + vals[1] + ' minutes');
+      var left = Math.max(0, pr.ends - Date.now()), s = Math.floor(left / 1000);
+      var vals = [Math.floor(s / 86400), Math.floor(s % 86400 / 3600), Math.floor(s % 3600 / 60), s % 60];
+      units.forEach(function (n, i) { var v = pad(vals[i]); if (n.textContent !== v) { n.textContent = v; if (!reduce && i === 3) { n.classList.remove('flip'); void n.offsetWidth; n.classList.add('flip'); } } });
+      cd.setAttribute('aria-label', 'Promotion ends in ' + vals[0] + ' days ' + vals[1] + ' hours');
       if (left < 1000) setTimeout(function () { host.replaceChildren(); dealBox(host); }, 1500);
     }
     tick(); var iv = setInterval(function () { if (!document.body.contains(cd)) { clearInterval(iv); return; } tick(); }, 1000);

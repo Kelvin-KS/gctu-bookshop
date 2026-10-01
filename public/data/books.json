@@ -753,9 +753,36 @@
    "img": "/img/essentials/laptop-bag.webp"
   }
  ],
- "deal": {
-  "percent": 10,
+ "promotions": {
+  "note": "Promotions are scheduled by the librarian (stage 4). Until then this demo cycles through sample promotions.",
   "who": "students",
-  "note": "One item each day. The deal changes at midnight (Accra time)."
+  "epoch": "2026-09-28T00:00:00Z",
+  "cycle": [
+   {
+    "item": "calculator",
+    "percent": 10,
+    "days": 14
+   },
+   {
+    "item": "laptop-bag",
+    "percent": 15,
+    "days": 3
+   },
+   {
+    "item": "notebooks",
+    "percent": 10,
+    "days": 7
+   },
+   {
+    "item": "backpack",
+    "percent": 10,
+    "days": 21
+   },
+   {
+    "item": "flash-drive",
+    "percent": 10,
+    "days": 1
+   }
+  ]
  }
 }
