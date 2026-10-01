@@ -425,8 +425,8 @@ footer.site::before{content:"";position:absolute;inset:0 0 auto;height:4px;backg
 .auth-card,.demo-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px}
 .auth-card{border-top:5px solid var(--accent);transition:border-color .35s}
 .auth-card h1{margin:0 0 14px;font:700 clamp(28px,4vw,36px)/1.1 var(--serif)}
-.roles{position:relative;display:grid;grid-template-columns:repeat(3,1fr);background:#efe9db;border-radius:12px;padding:4px;margin-bottom:12px}
-.roles .pill{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);border-radius:9px;background:var(--accent);box-shadow:0 6px 14px -8px rgba(0,0,0,.5);transition:transform .35s var(--ease),background .35s}
+.roles{position:relative;display:grid;grid-template-columns:repeat(2,1fr);background:#efe9db;border-radius:12px;padding:4px;margin-bottom:12px}
+.roles .pill{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/2);border-radius:9px;background:var(--accent);box-shadow:0 6px 14px -8px rgba(0,0,0,.5);transition:transform .35s var(--ease),background .35s}
 .auth-page[data-role="lecturer"] .roles .pill{transform:translateX(100%)}
 .auth-page[data-role="librarian"] .roles .pill{transform:translateX(200%)}
 .roles button{position:relative;z-index:1;border:0;background:transparent;padding:10px 6px;font-weight:700;font-size:14.5px;color:var(--muted);transition:color .3s}
@@ -501,3 +501,13 @@ footer.site::before{content:"";position:absolute;inset:0 0 auto;height:4px;backg
 .courses{list-style:none;margin:0 0 6px;padding:0;display:grid;gap:8px}
 .courses li{padding:11px 13px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:14.5px}
 .courses b{display:inline-block;min-width:74px;color:#5a2233}
+
+/* admin (librarian) sign-in */
+body[data-page="admin"]{background:#eef2f3}
+.admin-tag{margin-left:2px;align-self:center;font:700 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;background:#1f3b47;color:#fff;padding:5px 7px;border-radius:5px}
+.back-shop{margin-left:auto}
+.admin-eyebrow{color:#2c5463;margin:0 0 4px}
+.role-line a{color:var(--accent);font-weight:700}
+.safe{margin:16px 0 0;padding-left:18px;font-size:13.5px;color:var(--muted);display:grid;gap:4px}
+.admin-link{color:#8f98bd;font-size:12.5px}
+.admin-link:hover{color:#fff}

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Sign in · GCTU Bookshop</title>
+<title>Admin sign-in · GCTU Bookshop</title>
 <meta name="description" content="GCTU Bookshop: a student concept demo of an online bookshop for university students and lecturers. Not an official GCTU service.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#1c2957">
@@ -14,24 +14,19 @@
 <link rel="stylesheet" href="/css/styles.css">
 <script src="/js/app.js" defer></script>
 </head>
-<body data-page="signin">
+<body data-page="admin">
 <a class="skip" href="#main">Skip to content</a>
 <div id="site-top"></div>
-<main id="main" class="auth-page" data-role="student">
+<main id="main" class="auth-page" data-role="librarian">
   <div class="wrap auth">
     <section class="auth-card" aria-labelledby="si-title">
-      <p class="ret" id="ret" hidden></p>
       <p class="signed" id="signed" hidden></p>
-      <h1 id="si-title">Sign in</h1>
-      <div class="roles" id="roles" role="group" aria-label="I am signing in as">
-        <span class="pill" aria-hidden="true"></span>
-        <button type="button" data-role="student" aria-pressed="true">Student</button>
-        <button type="button" data-role="lecturer" aria-pressed="false">Lecturer</button>
-      </div>
-      <p class="role-line" id="role-line"></p>
+      <p class="eyebrow admin-eyebrow">Bookshop admin</p>
+      <h1 id="si-title">Librarian sign-in</h1>
+      <p class="role-line">For the bookshop librarian only: books, orders, people, setup codes and promotions. Students and lecturers sign in on the <a href="/sign-in/">main sign-in page</a>.</p>
       <form id="signin-form" novalidate>
         <div class="fld">
-          <label for="uid" id="uid-l">Student ID</label>
+          <label for="uid" id="uid-l">Staff ID</label>
           <input id="uid" name="uid" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="uid-e">
           <span class="err" id="uid-e"></span>
         </div>
@@ -41,19 +36,21 @@
           <span class="err" id="pw-e"></span>
         </div>
         <p class="msg" id="msg" role="alert" hidden></p>
-        <button class="btn wide accent" type="submit">Sign in</button>
+        <button class="btn wide accent" type="submit">Sign in to admin</button>
       </form>
-      <p class="aux" id="aux"></p>
+      <p class="aux">Librarian accounts are set up by the university’s IT team, not from this page.</p>
     </section>
     <aside class="demo-card" aria-labelledby="demo-title">
-      <h2 id="demo-title">Explore the demo</h2>
-      <p>One click, no ID needed. Real IDs and passwords are never accepted on this public demo.</p>
+      <h2 id="demo-title">See the admin side</h2>
+      <p>This is a public portfolio demo, so visitors can look at the librarian’s screens without a staff account.</p>
       <div class="demos">
-        <button type="button" class="dbtn" data-demo="student"><span class="av">AO</span><span><b>Try as a student</b><span>Ama Owusu · gets the 10% student price</span></span></button>
-        <button type="button" class="dbtn" data-demo="lecturer"><span class="av">KM</span><span><b>Try as a lecturer</b><span>Dr. K. Mensah · normal prices, reading lists</span></span></button>
+        <button type="button" class="dbtn" data-demo="librarian"><span class="av">LB</span><span><b>Open the admin demo</b><span>Signed in as the demo librarian</span></span></button>
       </div>
-      <p class="small">There is no public sign-up. In the real system the librarian creates accounts for current students and staff.</p>
-      <p class="small">Librarian? <a href="/admin/">Use the admin sign-in</a>.</p>
+      <ul class="safe">
+        <li>Only sample data: no real students, orders or payments</li>
+        <li>Demo data resets every night (once the database is connected)</li>
+        <li>In a real deployment this button would not exist</li>
+      </ul>
     </aside>
   </div>
 </main>

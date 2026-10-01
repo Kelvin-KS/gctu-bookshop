@@ -108,11 +108,17 @@
     var top = document.getElementById('site-top'); if (!top) return;
     var demo = el('div', 'demo-bar'); demo.appendChild(el('b', null, 'Concept demo')); demo.appendChild(document.createTextNode(' · not a real shop · no real orders or payments · not an official GCTU service'));
     var promo = el('div', 'promo', 'Free campus pickup · Delivery across Ghana');
+    var adminPage = page === 'admin';
     var head = el('header', 'top'); head.id = 'top';
     var w = el('div', 'wrap');
     var mark = el('a', 'mark'); mark.href = '/'; mark.setAttribute('aria-label', 'GCTU Bookshop home');
     mark.appendChild(svg(ICON.logo)); var words = el('span'); words.appendChild(el('b', null, 'GCTU')); words.appendChild(el('i', null, 'Bookshop')); mark.appendChild(words);
     w.appendChild(mark);
+    if (adminPage) {
+      mark.appendChild(el('span', 'admin-tag', 'Admin'));
+      var back = el('a', 'see back-shop', '← Back to the shop'); back.href = '/'; w.appendChild(back);
+      head.appendChild(w); top.appendChild(demo); top.appendChild(head); return;
+    }
     var nav = el('nav', 'nav'); nav.setAttribute('aria-label', 'Main');
     var g = params.get('genre');
     nav.appendChild(link('/browse/', 'Browse', page === 'browse' && g !== 'text' && g !== 'essentials'));
@@ -130,7 +136,7 @@
       var d = DEMO[session.role], chip = el('button', 'who signin who-' + session.role); chip.type = 'button'; chip.dataset.acct = '';
       chip.setAttribute('aria-label', 'Account: ' + d.name + ', ' + d.label);
       chip.appendChild(el('span', 'av', d.initials)); chip.appendChild(el('span', 'nm', d.short)); w.appendChild(chip);
-    } else if (page !== 'signin' && page !== 'firsttime') {
+    } else if (page !== 'signin' && page !== 'firsttime' && page !== 'admin') {
       var si = el('a', 'btn navy sm signin', 'Sign in'); si.href = '/sign-in/?next=' + encodeURIComponent(here()); w.appendChild(si);
     }
     head.appendChild(w);
@@ -189,6 +195,7 @@
     p2.appendChild(document.createTextNode(', colour-corrected (edited versions under the same licence). Fiction: public domain. Textbooks: OpenStax, CC BY 4.0, access for free at openstax.org. Classic covers: Standard Ebooks (CC0); other covers are original designs. Brand product photos: Wikimedia Commons, credited on each item. Other product photos and textbook cover art: AI-generated with Higgsfield for this demo. Fonts: Fraunces and DM Sans (SIL OFL).'));
     c2.appendChild(p2); cr.appendChild(c1); cr.appendChild(c2); w.appendChild(cr);
     var bottom = el('div', 'fbottom'); bottom.appendChild(el('span', null, 'Concept demo · not a real shop · no real orders or payments · not an official GCTU service'));
+    var adm = el('a', 'admin-link', 'View the admin side (demo)'); adm.href = '/admin/'; bottom.appendChild(adm);
     var tt = el('button', 'totop'); tt.appendChild(el('span', 'up', '↑')); tt.appendChild(document.createTextNode(' Back to top'));
     tt.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); var first = document.querySelector('.mark'); if (first) first.focus({ preventScroll: true }); });
     bottom.appendChild(tt); w.appendChild(bottom);
@@ -559,14 +566,16 @@
     var next = safeNext(params.get('next'));
     if (next && /^\/sign-in\//.test(next)) next = null;
     var d = DEMO[role];
-    flash('Signed in as ' + d.name + ' (' + d.label.toLowerCase() + ').' + (role === 'lecturer' ? ' The Faculty desk opens in stage 3.' : role === 'librarian' ? ' The dashboard opens in stage 4.' : ''));
-    location.href = next || '/';
+    flash((role === 'librarian' ? 'Signed in as the demo librarian.' : 'Signed in as ' + d.name + ' (' + d.label.toLowerCase() + ').') + (role === 'lecturer' ? ' The Faculty desk opens in stage 3.' : role === 'librarian' ? ' The dashboard opens in stage 4.' : ''));
+    location.href = next || (role === 'librarian' ? '/admin/' : '/');
   }
   function signin() {
     var main = document.getElementById('main'), roles = document.getElementById('roles');
     var uid = document.getElementById('uid'), pw = document.getElementById('pw'), msg = document.getElementById('msg');
-    var start = params.get('as'); if (!ROLES[start]) start = 'student';
+    if (params.get('as') === 'librarian') { location.replace('/admin/'); return; }
+    var start = params.get('as') === 'lecturer' ? 'lecturer' : 'student';
     function setRole(r) {
+      if (!roles) return;
       main.dataset.role = r;
       roles.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.role === r)); });
       document.getElementById('uid-l').textContent = ROLES[r].id;
@@ -576,7 +585,7 @@
       else aux.textContent = ROLES[r].aux;
       clearErrors(); msg.hidden = true;
     }
-    roles.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) setRole(b.dataset.role); });
+    if (roles) roles.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) setRole(b.dataset.role); });
     function fieldError(input, text) { var e = document.getElementById(input.id + '-e'); e.textContent = text; input.setAttribute('aria-invalid', text ? 'true' : 'false'); }
     function clearErrors() { fieldError(uid, ''); fieldError(pw, ''); }
     document.getElementById('pw-t').addEventListener('click', function () { var show = pw.type === 'password'; pw.type = show ? 'text' : 'password'; this.textContent = show ? 'Hide' : 'Show'; this.setAttribute('aria-pressed', String(show)); });
@@ -594,14 +603,16 @@
       var first = document.querySelector('[data-demo="' + main.dataset.role + '"]'); if (first) first.focus();
     });
     document.querySelectorAll('[data-demo]').forEach(function (b) { b.addEventListener('click', function () { demoSignIn(b.dataset.demo); }); });
-    if (params.get('why') === 'buy') { var ret = document.getElementById('ret'); ret.hidden = false; ret.textContent = 'Sign in to buy. You’ll come straight back to where you were.'; }
+    if (params.get('why') === 'buy' && document.getElementById('ret')) { var ret = document.getElementById('ret'); ret.hidden = false; ret.textContent = 'Sign in to buy. You’ll come straight back to where you were.'; }
     if (session) {
       var s = document.getElementById('signed'); s.hidden = false;
-      s.appendChild(document.createTextNode('You’re signed in as ' + DEMO[session.role].name + '. Pick another demo account to switch, or '));
+      s.appendChild(document.createTextNode(page === 'admin' && session.role === 'librarian'
+        ? 'You’re signed in as the demo librarian. The admin dashboard opens in stage 4. You can '
+        : 'You’re signed in as ' + DEMO[session.role].name + '. Pick another demo account to switch, or '));
       var so = el('button', 'linkish', 'sign out'); so.type = 'button'; so.addEventListener('click', function () { clearSession(); flash('Signed out.'); location.href = '/sign-in/'; });
       s.appendChild(so); s.appendChild(document.createTextNode('.'));
     }
-    setRole(start);
+    if (roles) setRole(start); else clearErrors();
   }
 
   // ---------- lecturer first sign-in (setup code) ----------
@@ -646,7 +657,7 @@
   // ---------- start ----------
   buildHeader(); buildFooter(); buildTabbar(); tilt();
   try { var fl = sessionStorage.getItem('gb-flash'); if (fl) { sessionStorage.removeItem('gb-flash'); setTimeout(function () { toast(fl); }, 300); } } catch (e) {}
-  if (page === 'signin') signin();
+  if (page === 'signin' || page === 'admin') signin();
   if (page === 'firsttime') firstTime();
   fetch('/data/books.json').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
     DATA = d; d.genres.forEach(function (g) { GENRES[g.id] = g; }); GENRES.text = GENRES.text || { name: 'Course textbooks' };
