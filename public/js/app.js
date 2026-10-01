@@ -79,9 +79,9 @@
   };
   function accountSheet(opener) {
     var d = DEMO[session.role];
-    var next = session.role === 'lecturer' ? 'Your Faculty desk opens in stage 3.' : session.role === 'librarian' ? 'Your dashboard is at /admin/dashboard/.' : 'My Library, orders and messages arrive with the rest of stage 2.';
-    sheet(d.name, d.label + ' · signed in on this device only. ' + next, [], (session.role === 'librarian' ? [['Open the dashboard', 'navy', function () { location.href = '/admin/dashboard/'; }]] : []).concat([
-      ['Sign out', session.role === 'librarian' ? 'line' : 'navy', function () { clearSession(); flash('Signed out.'); location.href = '/'; }],
+    var next = session.role === 'lecturer' ? 'Your reading lists are on the Faculty desk.' : session.role === 'librarian' ? 'Your dashboard is at /admin/dashboard/.' : 'My Library, orders and messages arrive with the rest of stage 2.';
+    sheet(d.name, d.label + ' · signed in on this device only. ' + next, [], (session.role === 'librarian' ? [['Open the dashboard', 'navy', function () { location.href = '/admin/dashboard/'; }]] : session.role === 'lecturer' ? [['Open the Faculty desk', 'maroon', function () { location.href = '/faculty/'; }]] : []).concat([
+      ['Sign out', session.role === 'student' ? 'navy' : 'line', function () { clearSession(); flash('Signed out.'); location.href = '/'; }],
       ['Close', 'line']
     ]), opener);
   }
@@ -135,6 +135,8 @@
     if (session) {
       var d = DEMO[session.role], chip = el('button', 'who signin who-' + session.role); chip.type = 'button'; chip.dataset.acct = '';
       chip.setAttribute('aria-label', 'Account: ' + d.name + ', ' + d.label);
+      if (session.role === 'lecturer') { var fd = el('a', 'btn sm maroon desk-link', 'Faculty desk'); fd.href = '/faculty/'; w.appendChild(fd); }
+      if (session.role === 'librarian') { var ad = el('a', 'btn sm slate-btn desk-link', 'Admin'); ad.href = '/admin/dashboard/'; w.appendChild(ad); }
       chip.appendChild(el('span', 'av', d.initials)); chip.appendChild(el('span', 'nm', d.short)); w.appendChild(chip);
     } else if (page !== 'signin' && page !== 'firsttime' && page !== 'admin') {
       var si = el('a', 'btn navy sm signin', 'Sign in'); si.href = '/sign-in/?next=' + encodeURIComponent(here()); w.appendChild(si);
@@ -174,7 +176,7 @@
     var mw = el('span'); mw.appendChild(el('b', null, 'GCTU')); mw.appendChild(el('i', null, 'Bookshop')); m.appendChild(mw); brand.appendChild(m);
     brand.appendChild(el('p', null, 'E-books and hard copies for GCTU students and lecturers. Free pickup on campus, delivery across Ghana.'));
     grid.appendChild(brand);
-    [['Shop', [['/browse/', 'All books'], ['/#genres', 'Genres'], ['/browse/?genre=text', 'Course textbooks'], ['/browse/?genre=essentials', 'Campus essentials']]],
+    [['Shop', [['/browse/', 'All books'], ['/#genres', 'Genres'], ['/browse/?genre=text', 'Course textbooks'], ['/browse/?genre=essentials', 'Campus essentials'], ['/course/', 'Course reading lists']]],
      ['Help', [['', 'Track an order', 'buy'], ['/#delivery', 'Delivery & pickup'], ['', 'Message the librarian', 'request'], ['', 'Request a book', 'request']]],
      ['Account', [['/sign-in/', 'Sign in'], ['/sign-in/first-time/', 'Lecturer first sign-in'], ['', 'My Library', 'buy'], ['', 'Order history', 'buy']]]
     ].forEach(function (col) {
@@ -369,6 +371,7 @@
 
   // ---------- pages ----------
   function home() {
+    homeLists();
     var pop = DATA.popular.map(byId);
     shelf(document.getElementById('shelf-popular'), pop, 'Popular this semester');
     shelf(document.getElementById('shelf-text'), DATA.books.filter(function (b) { return b.genre === 'text'; }), 'Course textbooks');
@@ -507,7 +510,7 @@
     var G = GENRES[b.genre], os = b.source === 'openstax';
     var hintT = document.getElementById('hint-t');
     if (session && session.role === 'student') hintT.textContent = 'Your 10% student discount is added at checkout.';
-    else if (session && session.role === 'lecturer') { hintT.textContent = 'Teaching with this book? '; var rl = el('button', 'linkish', 'Add it to a course reading list'); rl.type = 'button'; rl.dataset.later = 'faculty'; hintT.appendChild(rl); }
+    else if (session && session.role === 'lecturer') { hintT.textContent = 'Teaching with this book? '; var rl = el('a', 'linkish', 'Add it to a course reading list'); rl.href = '/faculty/#add/' + encodeURIComponent(b.id); hintT.appendChild(rl); }
     else if (session) document.getElementById('hint').hidden = true;
     document.title = b.title + ' · GCTU Bookshop';
     var crumbs = document.getElementById('crumbs');
@@ -553,6 +556,103 @@
     shelf(document.getElementById('shelf-more'), more, 'More ' + G.name);
   }
 
+  // ---------- course reading lists (from lecturers) ----------
+  var RL = null;
+  function loadLists() {
+    return fetch('/data/reading-lists.json').then(function (r) { return r.json(); }).then(function (d) {
+      RL = d; var saved = null; try { saved = JSON.parse(localStorage.getItem('gb-lists') || 'null'); } catch (e) {}
+      RL.live = saved && saved.v === 1 && saved.lists ? saved.lists : d.lists;
+      // A lecturer switched off by the librarian has their lists hidden.
+      var off = ADMIN && ADMIN.lecturers ? ADMIN.lecturers.filter(function (l) { return l.status === 'off'; }).map(function (l) { return l.id; }) : [];
+      Object.keys(RL.live).forEach(function (c) { if (off.indexOf(RL.live[c].by) >= 0) RL.live[c] = Object.assign({}, RL.live[c], { published: false }); });
+      return RL;
+    });
+  }
+  function listItem(id) {
+    var b = byId(id); if (b) return { kind: 'book', b: b };
+    var e = DATA.essentials.filter(function (x) { return x.id === id; })[0]; return e ? { kind: 'ess', e: e } : null;
+  }
+  function publishedCodes() { return Object.keys(RL.live).filter(function (c) { var l = RL.live[c]; return l && l.published && l.items && l.items.length; }); }
+  function slugC(c) { return c.replace(/\s+/g, '-'); }
+  function listCard(code) {
+    var l = RL.live[code], c = RL.courses[code] || {};
+    var a = el('a', 'list-card rv'); a.href = '/course/?code=' + encodeURIComponent(slugC(code));
+    var covers = el('div', 'lc-covers'); covers.setAttribute('aria-hidden', 'true');
+    l.items.slice(0, 3).forEach(function (it) { var x = listItem(it.id); if (!x) return; if (x.kind === 'book') covers.appendChild(cover(x.b)); else { var im = el('img'); im.src = x.e.img; im.alt = ''; covers.appendChild(im); } });
+    a.appendChild(covers);
+    a.appendChild(el('span', 'eyebrow', code)); a.appendChild(el('b', null, c.name || code));
+    a.appendChild(el('span', 'lc-by', (RL.lecturers[l.by] || 'Lecturer') + ' · ' + l.items.length + ' item' + (l.items.length === 1 ? '' : 's')));
+    var s = el('span', 'see', 'Open the list '); s.appendChild(el('span', 'arr', '→')); a.appendChild(s);
+    return a;
+  }
+  function homeLists() {
+    var host = document.getElementById('home-lists'); if (!host || !session) return;
+    loadLists().then(function () {
+      var w = el('div', 'wrap');
+      if (session.role === 'lecturer') {
+        var b = el('div', 'desk-banner rv'); var t = el('div'); t.appendChild(el('p', 'eyebrow', 'For lecturers')); t.appendChild(el('h2', null, 'Your reading lists are on the Faculty desk'));
+        t.appendChild(el('p', null, 'Add books to your courses, mark them essential or optional, and see how many students have them.'));
+        b.appendChild(t); var go = el('a', 'btn gold', 'Open the Faculty desk →'); go.href = '/faculty/'; b.appendChild(go); w.appendChild(b);
+      } else if (session.role === 'student') {
+        var codes = publishedCodes(); if (!codes.length) return;
+        var h = el('div', 's-head rv'); var ht = el('div'); ht.appendChild(el('h2', null, 'Recommended by your lecturers')); ht.appendChild(el('p', null, 'Reading lists for your courses this semester.')); h.appendChild(ht);
+        var all = el('a', 'see', 'All reading lists '); all.href = '/course/'; all.appendChild(el('span', 'arr', '→')); h.appendChild(all); w.appendChild(h);
+        var g = el('div', 'lists-grid'); codes.forEach(function (c) { g.appendChild(listCard(c)); }); w.appendChild(g);
+      } else return;
+      host.appendChild(w); host.hidden = false; reveal();
+    });
+  }
+  function course() {
+    var main = document.getElementById('course-main');
+    loadLists().then(function () {
+      var code = (params.get('code') || '').replace(/-/g, ' ').toUpperCase().slice(0, 12);
+      var l = code && RL.live[code];
+      if (!code || !l || !l.published || !l.items.length) {
+        document.title = 'Course reading lists · GCTU Bookshop';
+        main.appendChild(el('p', 'eyebrow', 'Recommended by lecturers'));
+        main.appendChild(el('h1', 'page-title', 'Course reading lists'));
+        main.appendChild(el('p', 'page-sub', code ? 'There’s no published list for ' + code + ' yet. Here are the ones available.' : 'Books and items your lecturers recommend for each course.'));
+        var g = el('div', 'lists-grid'); publishedCodes().forEach(function (c) { g.appendChild(listCard(c)); }); main.appendChild(g);
+        reveal(); return;
+      }
+      var c = RL.courses[code] || {}, mine = session && session.role === 'lecturer' && l.by === RL.lecturer;
+      document.title = code + ' reading list · GCTU Bookshop';
+      var crumbs = el('nav', 'crumbs'); crumbs.setAttribute('aria-label', 'Breadcrumb'); var h1 = el('a', null, 'Home'); h1.href = '/'; var h2 = el('a', null, 'Reading lists'); h2.href = '/course/';
+      crumbs.appendChild(h1); crumbs.appendChild(document.createTextNode(' / ')); crumbs.appendChild(h2); crumbs.appendChild(document.createTextNode(' / ' + code)); main.appendChild(crumbs);
+      var head = el('div', 'course-head');
+      var ht = el('div'); ht.appendChild(el('p', 'eyebrow', 'Recommended by your lecturer'));
+      ht.appendChild(el('h1', null, code + ' · ' + (c.name || ''))); ht.appendChild(el('p', 'byline', (RL.lecturers[l.by] || 'Lecturer') + ' · Level ' + (c.level || '') + ' · Semester 1, 2026/27'));
+      if (l.intro) ht.appendChild(el('blockquote', 'intro-q', l.intro));
+      head.appendChild(ht);
+      var act = el('div', 'course-act');
+      var ess = l.items.filter(function (i) { return i.essential; }).length;
+      if (mine) { var ed = el('a', 'btn maroon', 'Edit in the Faculty desk'); ed.href = '/faculty/#lists/' + slugC(code); act.appendChild(ed); }
+      else { var all = el('button', 'btn navy', 'Add ' + (ess ? 'the ' + ess + ' essential' + (ess === 1 ? '' : 's') : 'all') + ' to cart'); all.type = 'button'; all.dataset.later = 'buy'; act.appendChild(all); }
+      act.appendChild(el('span', 'small', l.items.length + ' item' + (l.items.length === 1 ? '' : 's') + ' · ' + ess + ' essential'));
+      head.appendChild(act); main.appendChild(head);
+      var ol = el('ol', 'clist');
+      l.items.forEach(function (it, i) {
+        var x = listItem(it.id); if (!x) return;
+        var li = el('li', 'cbook rv');
+        var vis = el('a', 'cb-vis'); vis.setAttribute('aria-hidden', 'true'); vis.tabIndex = -1;
+        if (x.kind === 'book') { vis.href = '/book/?id=' + encodeURIComponent(x.b.id); vis.appendChild(cover(x.b)); } else { vis.href = '/browse/?genre=essentials'; var im = el('img'); im.src = x.e.img; im.alt = ''; vis.appendChild(im); }
+        li.appendChild(vis);
+        var m = el('div', 'cb-mid');
+        var tl = el('a', 'cb-title', x.kind === 'book' ? x.b.title : x.e.name); tl.href = vis.href; m.appendChild(tl);
+        m.appendChild(el('span', 'cb-sub', (x.kind === 'book' ? x.b.author : 'Campus essentials')));
+        m.appendChild(el('span', 'tag-l ' + (it.essential ? 'ess' : 'opt'), it.essential ? 'Essential' : 'Optional'));
+        if (it.note) m.appendChild(el('q', 'cb-note', it.note));
+        li.appendChild(m);
+        var side = el('div', 'cb-side');
+        if (x.kind === 'book') side.appendChild(priceRow(x.b, 'ebook')); else { var p = el('div', 'price'); p.appendChild(el('span', 'now', cedi(x.e.price))); side.appendChild(p); }
+        if (!mine) { var add = el('button', 'btn line sm', 'Add to cart'); add.type = 'button'; add.dataset.later = 'buy'; side.appendChild(add); }
+        li.appendChild(side); ol.appendChild(li);
+      });
+      main.appendChild(ol);
+      reveal();
+    });
+  }
+
   // ---------- motion ----------
   function tilt() {
     if (reduce || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
@@ -569,7 +669,8 @@
     });
   }
   function reveal() {
-    var items = [].slice.call(document.querySelectorAll('.rv'));
+    var items = [].slice.call(document.querySelectorAll('.rv:not([data-rv])'));
+    items.forEach(function (x) { x.setAttribute('data-rv', '1'); });
     if (reduce || !('IntersectionObserver' in window)) return;
     var seen = false;
     var io = new IntersectionObserver(function (es) {
@@ -600,8 +701,8 @@
     var next = safeNext(params.get('next'));
     if (next && /^\/sign-in\//.test(next)) next = null;
     var d = DEMO[role];
-    flash((role === 'librarian' ? 'Signed in as the demo librarian.' : 'Signed in as ' + d.name + ' (' + d.label.toLowerCase() + ').') + (role === 'lecturer' ? ' The Faculty desk opens in stage 3.' : ''));
-    location.href = role === 'librarian' ? '/admin/dashboard/' : (next || '/');
+    flash((role === 'librarian' ? 'Signed in as the demo librarian.' : 'Signed in as ' + d.name + ' (' + d.label.toLowerCase() + ').') + '');
+    location.href = role === 'librarian' ? '/admin/dashboard/' : (next || (role === 'lecturer' ? '/faculty/' : '/'));
   }
   function signin() {
     var main = document.getElementById('main'), roles = document.getElementById('roles');
@@ -701,6 +802,7 @@
     if (page === 'browse') browse();
     if (page === 'search') search();
     if (page === 'book') book();
+    if (page === 'course') { course(); return; }
     reveal();
   }).catch(function () {
     var m = document.getElementById('main');

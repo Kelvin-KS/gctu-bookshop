@@ -1,0 +1,110 @@
+{
+ "note": "Sample reading lists for the public demo. Lecturer names and course codes are examples.",
+ "lecturer": "DEMO-T-0007",
+ "courses": {
+  "CSC 205": {
+   "name": "Data Structures",
+   "level": 200,
+   "followers": 42
+  },
+  "CSC 301": {
+   "name": "Operating Systems",
+   "level": 300,
+   "followers": 31
+  },
+  "STAT 201": {
+   "name": "Introductory Statistics",
+   "level": 200,
+   "followers": 36
+  },
+  "BUS 101": {
+   "name": "Introduction to Business",
+   "level": 100,
+   "followers": 58
+  },
+  "MGT 201": {
+   "name": "Principles of Management",
+   "level": 200,
+   "followers": 40
+  },
+  "MATH 101": {
+   "name": "Calculus I",
+   "level": 100,
+   "followers": 64
+  },
+  "ECON 101": {
+   "name": "Principles of Economics",
+   "level": 100,
+   "followers": 51
+  }
+ },
+ "lists": {
+  "CSC 205": {
+   "by": "DEMO-T-0007",
+   "published": true,
+   "intro": "Read the starred books before week 4. We use them for algorithm analysis.",
+   "items": [
+    {
+     "id": "intro-stats",
+     "note": "Chapters 1 to 3 before week 4: we use them for algorithm analysis.",
+     "essential": true
+    },
+    {
+     "id": "calculus-1",
+     "note": "Revise limits and sequences; useful for recurrences.",
+     "essential": true
+    },
+    {
+     "id": "python",
+     "note": "If you are rusty on Python, chapters 1 to 6.",
+     "essential": false
+    },
+    {
+     "id": "time-machine",
+     "note": "Optional, for fun: a classic about thinking in systems.",
+     "essential": false
+    }
+   ]
+  },
+  "STAT 201": {
+   "by": "DEMO-T-0007",
+   "published": true,
+   "intro": "Our main text for the semester.",
+   "items": [
+    {
+     "id": "intro-stats",
+     "note": "The course follows this book chapter by chapter.",
+     "essential": true
+    },
+    {
+     "id": "casio-fx82es",
+     "note": "A scientific calculator is required for tests.",
+     "essential": true
+    }
+   ]
+  },
+  "BUS 101": {
+   "by": "DEMO-T-0012",
+   "published": true,
+   "intro": "Core reading for the first semester.",
+   "items": [
+    {
+     "id": "intro-business",
+     "note": "Read one chapter a week.",
+     "essential": true
+    },
+    {
+     "id": "management",
+     "note": "Background for the group project.",
+     "essential": false
+    }
+   ]
+  }
+ },
+ "lecturers": {
+  "DEMO-T-0007": "Dr. K. Mensah",
+  "DEMO-T-0012": "Mrs. A. Owusu-Ansah",
+  "DEMO-T-0019": "Mr. J. Tetteh",
+  "DEMO-T-0003": "Prof. E. Agyeman"
+ }
+}

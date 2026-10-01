@@ -174,3 +174,4 @@
   .promo-row .promo-price,.promo-row .btn{grid-column:2}
 }
 @media (prefers-reduced-motion:reduce){.chart .bar{transition:none}}
+.req-msg{display:block;font-style:italic;margin-top:2px}

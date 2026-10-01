@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Faculty desk · GCTU Bookshop</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#5a2233">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/dm-sans-normal-latin-c57593e0.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/admin.css">
+<link rel="stylesheet" href="/css/faculty.css">
+<script src="/js/faculty.js" defer></script>
+</head>
+<body class="adm fac">
+<a class="skip" href="#adm-main">Skip to content</a>
+<div class="adm-demo">Faculty desk demo · sample data only · changes are saved in this browser until the database is connected</div>
+<div class="adm-shell">
+  <aside class="adm-side" aria-label="Admin">
+    <a class="adm-brand" href="#overview" aria-label="Faculty desk overview">
+      <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="40" width="44" height="12" rx="3" fill="#ffffff"/><rect x="14" y="26" width="38" height="12" rx="3" fill="#e3c3cc"/><rect x="8" y="12" width="34" height="12" rx="3" fill="#e3ad35"/></svg>
+      <span><b>GCTU BOOKSHOP</b><i>Faculty desk</i></span>
+    </a>
+    <nav class="adm-nav" id="adm-nav" aria-label="Faculty desk">
+      <a href="#overview" data-v="overview">Overview</a>
+      <a href="#lists" data-v="lists">Reading lists</a>
+      <a href="#request" data-v="request">Request a book</a>
+      <span class="adm-sep" aria-hidden="true"></span>
+      <a href="/" class="adm-out">Go to the shop ↗</a>
+    </nav>
+    <div class="adm-me"><span class="av">KM</span><span><b>Dr. K. Mensah</b>Demo lecturer</span><button type="button" id="signout" class="adm-signout">Sign out</button></div>
+  </aside>
+  <main class="adm-main" id="adm-main" tabindex="-1"></main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

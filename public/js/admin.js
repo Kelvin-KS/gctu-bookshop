@@ -82,7 +82,7 @@
   function ess(id) { var e = CAT.essentials.filter(function (x) { return x.id === id; })[0]; return e ? Object.assign({}, e, ST.ess[id] || {}) : null; }
   function allBooks() { return CAT.books.concat(ST.newBooks).map(function (b) { return book(b.id); }); }
   function allEss() { return CAT.essentials.map(function (e) { return ess(e.id); }); }
-  function student(id) { return ST.students.filter(function (s) { return s.id === id; })[0] || { name: 'Unknown', id: id }; }
+  function student(id) { return ST.students.filter(function (s) { return s.id === id; })[0] || ST.lecturers.filter(function (l) { return l.id === id; }).map(function (l) { return { id: l.id, name: l.name + ' (lecturer)' }; })[0] || { name: 'Unknown', id: id }; }
   function itemInfo(it) {
     var x = it.kind === 'ess' ? ess(it.id) : book(it.id);
     if (!x) return { name: it.id, unit: 0 };
@@ -538,7 +538,7 @@
     var ORDER = { waiting: 0, ordered: 1, added: 2, no: 3 };
     ST.requests.slice().sort(function (a, b) { return ORDER[a.status] - ORDER[b.status] || b.at - a.at; }).forEach(function (r) {
       var c = el('article', 'req-a' + (r.status === 'waiting' ? ' is-new' : ''));
-      var t = el('div'); t.appendChild(el('b', null, r.title)); t.appendChild(el('span', 'muted-a', r.format + ' · ' + student(r.student).name + ' · ' + fmtDate(r.at))); c.appendChild(t);
+      var t = el('div'); t.appendChild(el('b', null, r.title)); t.appendChild(el('span', 'muted-a', r.format + ' · ' + student(r.student).name + ' · ' + fmtDate(r.at))); if (r.message) t.appendChild(el('span', 'muted-a req-msg', '“' + r.message + '”')); c.appendChild(t);
       var st = select([['waiting', 'Waiting'], ['ordered', 'Ordered'], ['added', 'Added to the shop'], ['no', 'Not possible']], r.status); st.setAttribute('aria-label', 'Status for ' + r.title);
       var note = input('text', r.note, { placeholder: 'Reply to the student', 'aria-label': 'Reply about ' + r.title, maxlength: '200' });
       var row = el('div', 'req-ctl'); row.appendChild(st); row.appendChild(note);
@@ -571,6 +571,8 @@
     CAT = d[0]; SAMPLE = d[1];
     try { ST = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { ST = null; }
     if (!ST || ST.v !== 1) seed();
+    // Requests lecturers sent from the Faculty desk (same browser) join the librarian's list.
+    try { var gl = JSON.parse(localStorage.getItem('gb-lists') || 'null'); (gl && gl.requests || []).forEach(function (r) { if (!ST.requests.some(function (x) { return x.id === r.id; })) ST.requests.push({ id: String(r.id), student: String(r.student), title: String(r.title).slice(0, 160), format: String(r.format), status: 'waiting', note: '', at: Number(r.at) || Date.now(), message: String(r.message || '').slice(0, 300) }); }); save(); } catch (e) {}
     window.addEventListener('hashchange', route); route();
   }).catch(function () { main.replaceChildren(el('p', 'err', 'The admin data could not load. Refresh the page.')); });
 })();
