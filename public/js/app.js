@@ -73,6 +73,7 @@
   }
   var LATER = {
     buy: ['The cart comes next', 'You’re signed in. The rest of stage 2 adds:', ['Cart and checkout with Paystack test payments (no real money)', 'The student discount as its own line at checkout', 'My Library, orders and pickup tracking']],
+    freebook: ['My Library opens with the cart', 'When it does, free e-books go straight into My Library with one tap: no cart and no payment. Until then you can read or download this book free from OpenStax.', []],
     request: ['Book requests open in stage 3', 'Students will be able to ask the librarian for a title and follow the reply in their messages.', []],
     faculty: ['The Faculty desk opens in stage 3', 'Lecturers will land on their own dashboard with their courses and reading lists.', []],
     library: ['The librarian’s dashboard opens in stage 4', 'Books, orders, people, setup codes and promotions will be managed from there.', []]
@@ -521,7 +522,11 @@
     document.getElementById('b-title').textContent = b.title;
     document.getElementById('b-by').textContent = os ? 'OpenStax · example course code ' + b.course : b.author + ' · ' + (b.year < 1700 ? 'c. ' : '') + b.year + ' · public domain';
     var seg = document.getElementById('seg'), big = document.getElementById('bigprice'), ship = document.getElementById('ship');
-    var mode = b.stock === 0 ? 'ebook' : 'hard';
+    var mode = b.stock === 0 || os ? 'ebook' : 'hard';
+    var acts = document.querySelector('.acts'), addBtn = acts.querySelector('[data-later="buy"]');
+    var osLink = null;
+    if (os && b.openstaxUrl) { osLink = el('a', 'btn line', 'Download the PDF from OpenStax \u2197'); osLink.href = b.openstaxUrl; osLink.rel = 'noopener'; osLink.target = '_blank'; acts.insertBefore(osLink, addBtn.nextSibling); }
+    var hintBox = document.getElementById('hint'), hintHTML = hintBox.hidden;
     if (b.stock === 0) seg.querySelector('[data-v="hard"]').disabled = true;
     function setMode(v) {
       mode = v; seg.dataset.v = v;
@@ -531,7 +536,14 @@
       else if (os) { big.appendChild(el('span', 'now', 'Free')); big.appendChild(el('span', 'save', 'OpenStax e-book')); }
       else { big.appendChild(el('span', 'now', cedi(ebookPrice(b)))); var s = el('s', null, cedi(b.price)); s.setAttribute('aria-label', 'hard copy price ' + cedi(b.price)); big.appendChild(s); big.appendChild(el('span', 'save', 'Save ' + b.saving + '% on the e-book')); }
       if (!reduce) { big.classList.remove('swap'); void big.offsetWidth; big.classList.add('swap'); }
+      // Free e-books skip the cart and payment entirely.
+      var free = os && v === 'ebook';
+      addBtn.replaceChildren(document.createTextNode(free ? 'Add to My Library \u00b7 free ' : 'Add to cart ')); addBtn.appendChild(el('span', 'arr', '\u2192'));
+      addBtn.dataset.later = free ? (session ? 'freebook' : 'buy') : 'buy';
+      if (osLink) osLink.hidden = !free;
+      hintBox.hidden = hintHTML || free;
       ship.replaceChildren();
+      if (free) { ['Free: no cart and no payment', 'Goes straight into My Library, to read in the browser on any device', 'Prefer a file? Download the PDF free from OpenStax'].forEach(function (s) { ship.appendChild(el('li', null, s)); }); return; }
       (v === 'hard' ? ['Campus pickup: free, ready in 1–2 working days', 'Delivery in Accra: 2–3 working days, ' + cedi(25), 'Elsewhere in Ghana: courier or bus parcel, 3–5 working days, ' + cedi(45)]
                     : ['Opens in My Library as soon as payment clears', 'Read on your phone or laptop, in the browser', 'Yours to keep']).forEach(function (s) { ship.appendChild(el('li', null, s)); });
     }
@@ -645,7 +657,7 @@
         li.appendChild(m);
         var side = el('div', 'cb-side');
         if (x.kind === 'book') side.appendChild(priceRow(x.b, 'ebook')); else { var p = el('div', 'price'); p.appendChild(el('span', 'now', cedi(x.e.price))); side.appendChild(p); }
-        if (!mine) { var add = el('button', 'btn line sm', 'Add to cart'); add.type = 'button'; add.dataset.later = 'buy'; side.appendChild(add); }
+        if (!mine) { var fr = x.kind === 'book' && x.b.source === 'openstax'; var add = el('button', 'btn line sm', fr ? 'Add free e-book' : 'Add to cart'); add.type = 'button'; add.dataset.later = fr && session ? 'freebook' : 'buy'; side.appendChild(add); }
         li.appendChild(side); ol.appendChild(li);
       });
       main.appendChild(ol);

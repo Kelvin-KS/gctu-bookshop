@@ -550,11 +550,12 @@
    "faculty": "Maths & Science",
    "blurb": "Functions, limits, derivatives and an introduction to integration, with worked examples.",
    "rank": 100,
-   "art": "/img/textbooks/calculus-1.webp"
+   "art": "/img/textbooks/calculus-1.webp",
+   "openstaxUrl": "https://openstax.org/details/books/calculus-volume-1"
   },
   {
    "id": "intro-stats",
-   "title": "Introductory Statistics",
+   "title": "Introductory Statistics 2e",
    "author": "OpenStax",
    "year": null,
    "genre": "text",
@@ -566,7 +567,8 @@
    "faculty": "Maths & Science",
    "blurb": "Collecting and describing data, probability, and testing ideas with real numbers.",
    "rank": 101,
-   "art": "/img/textbooks/intro-stats.webp"
+   "art": "/img/textbooks/intro-stats.webp",
+   "openstaxUrl": "https://openstax.org/details/books/introductory-statistics-2e"
   },
   {
    "id": "python",
@@ -582,7 +584,8 @@
    "faculty": "Computing",
    "blurb": "A first programming course in Python: variables, loops, functions and working with data.",
    "rank": 102,
-   "art": "/img/textbooks/python.webp"
+   "art": "/img/textbooks/python.webp",
+   "openstaxUrl": "https://openstax.org/details/books/introduction-python-programming"
   },
   {
    "id": "data-science",
@@ -598,7 +601,8 @@
    "faculty": "Computing",
    "blurb": "From asking a question to cleaning data, analysing it and presenting what it shows.",
    "rank": 103,
-   "art": "/img/textbooks/data-science.webp"
+   "art": "/img/textbooks/data-science.webp",
+   "openstaxUrl": "https://openstax.org/details/books/principles-data-science"
   },
   {
    "id": "workplace-software",
@@ -614,7 +618,8 @@
    "faculty": "Computing",
    "blurb": "Documents, spreadsheets, presentations and collaboration tools used at work.",
    "rank": 104,
-   "art": "/img/textbooks/workplace-software.webp"
+   "art": "/img/textbooks/workplace-software.webp",
+   "openstaxUrl": "https://openstax.org/details/books/workplace-software-skills"
   },
   {
    "id": "intro-business",
@@ -630,11 +635,12 @@
    "faculty": "Business",
    "blurb": "How businesses are started, organised, financed and run.",
    "rank": 105,
-   "art": "/img/textbooks/intro-business.webp"
+   "art": "/img/textbooks/intro-business.webp",
+   "openstaxUrl": "https://openstax.org/details/books/introduction-business"
   },
   {
    "id": "economics",
-   "title": "Principles of Economics",
+   "title": "Principles of Economics 3e",
    "author": "OpenStax",
    "year": null,
    "genre": "text",
@@ -646,7 +652,8 @@
    "faculty": "Business",
    "blurb": "Supply and demand, markets, and how whole economies grow and shrink.",
    "rank": 106,
-   "art": "/img/textbooks/economics.webp"
+   "art": "/img/textbooks/economics.webp",
+   "openstaxUrl": "https://openstax.org/details/books/principles-economics-3e"
   },
   {
    "id": "accounting-1",
@@ -662,7 +669,8 @@
    "faculty": "Business",
    "blurb": "Recording transactions and reading financial statements.",
    "rank": 107,
-   "art": "/img/textbooks/accounting-1.webp"
+   "art": "/img/textbooks/accounting-1.webp",
+   "openstaxUrl": "https://openstax.org/details/books/principles-financial-accounting"
   },
   {
    "id": "management",
@@ -678,7 +686,8 @@
    "faculty": "Business",
    "blurb": "Planning, organising, leading and controlling, with modern case examples.",
    "rank": 108,
-   "art": "/img/textbooks/management.webp"
+   "art": "/img/textbooks/management.webp",
+   "openstaxUrl": "https://openstax.org/details/books/principles-management"
   },
   {
    "id": "psychology",
@@ -694,7 +703,8 @@
    "faculty": "Maths & Science",
    "blurb": "An introduction to how people think, feel, learn and behave.",
    "rank": 109,
-   "art": "/img/textbooks/psychology.webp"
+   "art": "/img/textbooks/psychology.webp",
+   "openstaxUrl": "https://openstax.org/details/books/psychology-2e"
   }
  ],
  "essentials": [
