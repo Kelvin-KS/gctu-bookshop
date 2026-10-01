@@ -729,6 +729,15 @@
    "creditUrl": "https://commons.wikimedia.org/wiki/File:4_Bic_Cristal_pens_and_caps.jpg"
   },
   {
+   "id": "pens",
+   "name": "Ballpoint pens, pack of 6",
+   "blurb": "Blue, black and red. Smooth, quick-drying ink.",
+   "price": 15,
+   "stock": 40,
+   "img": "/img/essentials/pens.webp",
+   "credit": "Photo: AI-generated for this demo."
+  },
+  {
    "id": "nataraj-pencils",
    "name": "Nataraj HB pencils, pack of 10",
    "blurb": "Classic HB pencils for drawing, exams and shading answer sheets.",

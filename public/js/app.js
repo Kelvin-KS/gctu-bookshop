@@ -35,30 +35,64 @@
     info: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2f4185" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>'
   };
 
-  // ---------- notices for features that arrive in a later stage ----------
-  var LATER = {
-    buy: ['Buying opens in stage 2', 'This is the shop front. The next stage adds:', ['Demo sign-in buttons for a student, a lecturer and the librarian', 'Cart and checkout with Paystack test payments (no real money)', 'My Library, orders and pickup tracking']],
-    account: ['Accounts open in stage 2', 'Students and lecturers will sign in with their ID. In this public demo, one-click demo accounts are used instead, so no real ID is ever needed.', []],
-    request: ['Book requests open in stage 3', 'Students will be able to ask the librarian for a title and follow the reply in their messages.', []]
+  // ---------- demo session ----------
+  // The public demo never accepts real IDs or passwords. One-click demo accounts are kept in
+  // this browser only (localStorage). Stage 2 swaps this for real Supabase demo accounts.
+  var DEMO = {
+    student: { name: 'Ama Owusu', short: 'Ama', initials: 'AO', label: 'Demo student' },
+    lecturer: { name: 'Dr. K. Mensah', short: 'Dr. Mensah', initials: 'KM', label: 'Demo lecturer' },
+    librarian: { name: 'The librarian', short: 'Librarian', initials: 'LB', label: 'Demo librarian' }
   };
-  function later(kind, opener) {
-    var d = LATER[kind];
+  function readSession() { try { var s = JSON.parse(localStorage.getItem('gb-demo') || 'null'); return s && DEMO[s.role] ? s : null; } catch (e) { return null; } }
+  function saveSession(role) { try { localStorage.setItem('gb-demo', JSON.stringify({ role: role })); } catch (e) {} }
+  function clearSession() { try { localStorage.removeItem('gb-demo'); } catch (e) {} }
+  function flash(msg) { try { sessionStorage.setItem('gb-flash', msg); } catch (e) {} }
+  var session = readSession();
+  // Only follow "next" links back to a page on this site (no //other-site.com tricks).
+  function safeNext(n) { return n && /^\/(?!\/)/.test(n) && n.indexOf('\\') < 0 ? n : null; }
+  function here() { return location.pathname + location.search; }
+
+  // ---------- sheets (small dialogs) ----------
+  function sheet(title, text, list, actions, opener) {
     var wrap = el('div', 'sheet'); wrap.setAttribute('role', 'dialog'); wrap.setAttribute('aria-modal', 'true'); wrap.setAttribute('aria-labelledby', 'sheet-t');
     var box = el('div', 'sheet-box');
-    var h = el('h2', null, d[0]); h.id = 'sheet-t'; box.appendChild(h);
-    box.appendChild(el('p', null, d[1]));
-    if (d[2].length) { var ul = el('ul'); d[2].forEach(function (x) { ul.appendChild(el('li', null, x)); }); box.appendChild(ul); }
-    var ok = el('button', 'btn navy', 'OK'); box.appendChild(ok);
-    wrap.appendChild(box); document.body.appendChild(wrap); ok.focus();
+    var h = el('h2', null, title); h.id = 'sheet-t'; box.appendChild(h);
+    if (text) box.appendChild(el('p', null, text));
+    if (list && list.length) { var ul = el('ul'); list.forEach(function (x) { ul.appendChild(el('li', null, x)); }); box.appendChild(ul); }
+    var row = el('div', 'btns'); box.appendChild(row);
     function close() { wrap.remove(); document.removeEventListener('keydown', esc); if (opener) opener.focus(); }
     function esc(e) { if (e.key === 'Escape') close(); }
-    ok.addEventListener('click', close);
+    (actions || [['OK', 'navy']]).forEach(function (a, i) {
+      var b = el('button', 'btn ' + a[1], a[0]); b.type = 'button';
+      b.addEventListener('click', function () { if (a[2]) a[2](); close(); });
+      row.appendChild(b); if (i === 0) setTimeout(function () { b.focus(); }, 0);
+    });
+    wrap.appendChild(box); document.body.appendChild(wrap);
     wrap.addEventListener('click', function (e) { if (e.target === wrap) close(); });
     document.addEventListener('keydown', esc);
   }
+  var LATER = {
+    buy: ['The cart comes next', 'You’re signed in. The rest of stage 2 adds:', ['Cart and checkout with Paystack test payments (no real money)', 'The student discount as its own line at checkout', 'My Library, orders and pickup tracking']],
+    request: ['Book requests open in stage 3', 'Students will be able to ask the librarian for a title and follow the reply in their messages.', []],
+    faculty: ['The Faculty desk opens in stage 3', 'Lecturers will land on their own dashboard with their courses and reading lists.', []],
+    library: ['The librarian’s dashboard opens in stage 4', 'Books, orders, people, setup codes and promotions will be managed from there.', []]
+  };
+  function accountSheet(opener) {
+    var d = DEMO[session.role];
+    var next = session.role === 'lecturer' ? 'Your Faculty desk opens in stage 3.' : session.role === 'librarian' ? 'Your dashboard opens in stage 4.' : 'My Library, orders and messages arrive with the rest of stage 2.';
+    sheet(d.name, d.label + ' · signed in on this device only. ' + next, [], [
+      ['Sign out', 'navy', function () { clearSession(); flash('Signed out.'); location.href = '/'; }],
+      ['Close', 'line']
+    ], opener);
+  }
   document.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-later]');
-    if (t) { e.preventDefault(); later(t.dataset.later, t); }
+    var t = e.target.closest('[data-later],[data-acct]');
+    if (!t) return;
+    e.preventDefault();
+    if (t.hasAttribute('data-acct')) { accountSheet(t); return; }
+    var kind = t.dataset.later;
+    if (kind === 'buy' && !session) { location.href = '/sign-in/?why=buy&next=' + encodeURIComponent(here()); return; }
+    var d = LATER[kind]; sheet(d[0], d[1], d[2], null, t);
   });
 
   var toastTimer;
@@ -92,7 +126,13 @@
     if (page === 'search') inp.value = params.get('q') || '';
     f.appendChild(inp); w.appendChild(f);
     var cart = el('button', 'icon-btn cart-btn'); cart.setAttribute('aria-label', 'Cart'); cart.dataset.later = 'buy'; cart.appendChild(svg(ICON.cart)); w.appendChild(cart);
-    var si = el('button', 'btn navy sm signin', 'Sign in'); si.dataset.later = 'account'; w.appendChild(si);
+    if (session) {
+      var d = DEMO[session.role], chip = el('button', 'who signin who-' + session.role); chip.type = 'button'; chip.dataset.acct = '';
+      chip.setAttribute('aria-label', 'Account: ' + d.name + ', ' + d.label);
+      chip.appendChild(el('span', 'av', d.initials)); chip.appendChild(el('span', 'nm', d.short)); w.appendChild(chip);
+    } else if (page !== 'signin' && page !== 'firsttime') {
+      var si = el('a', 'btn navy sm signin', 'Sign in'); si.href = '/sign-in/?next=' + encodeURIComponent(here()); w.appendChild(si);
+    }
     head.appendChild(w);
     top.appendChild(demo); top.appendChild(promo); top.appendChild(head);
     window.addEventListener('scroll', function () { head.classList.toggle('scrolled', window.scrollY > 40); }, { passive: true });
@@ -108,7 +148,8 @@
     tab('/browse/', ICON.browse, 'Browse', page === 'browse' || page === 'book');
     tab('/search/', ICON.search.replace('18', '22').replace('18', '22'), 'Search', page === 'search');
     tab(null, ICON.cart.replace('20', '22').replace('20', '22'), 'Cart', false, 'buy');
-    tab(null, ICON.user, 'Account', false, 'account');
+    if (session) { var b = el('button'); b.type = 'button'; b.dataset.acct = ''; b.appendChild(svg(ICON.user)); b.appendChild(document.createTextNode(DEMO[session.role].short)); bar.appendChild(b); }
+    else tab('/sign-in/?next=' + encodeURIComponent(here()), ICON.user, 'Sign in', page === 'signin' || page === 'firsttime');
     document.body.appendChild(bar);
     var t = el('div', 'toast'); t.id = 'toast'; t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite'); document.body.appendChild(t);
   }
@@ -129,7 +170,7 @@
     grid.appendChild(brand);
     [['Shop', [['/browse/', 'All books'], ['/#genres', 'Genres'], ['/browse/?genre=text', 'Course textbooks'], ['/browse/?genre=essentials', 'Campus essentials']]],
      ['Help', [['', 'Track an order', 'buy'], ['/#delivery', 'Delivery & pickup'], ['', 'Message the librarian', 'request'], ['', 'Request a book', 'request']]],
-     ['Account', [['', 'Sign in', 'account'], ['', 'My Library', 'account'], ['', 'Wishlist', 'account'], ['', 'Order history', 'account']]]
+     ['Account', [['/sign-in/', 'Sign in'], ['/sign-in/first-time/', 'Lecturer first sign-in'], ['', 'My Library', 'buy'], ['', 'Order history', 'buy']]]
     ].forEach(function (col) {
       var c = el('div', 'fcol rv'); c.appendChild(el('h2', null, col[0])); var ul = el('ul');
       col[1].forEach(function (l) { var li = el('li'), a = el('a', null, l[1]); a.href = l[0] || '#'; if (l[2]) a.dataset.later = l[2]; li.appendChild(a); ul.appendChild(li); });
@@ -423,6 +464,10 @@
       main.replaceChildren(nf); return;
     }
     var G = GENRES[b.genre], os = b.source === 'openstax';
+    var hintT = document.getElementById('hint-t');
+    if (session && session.role === 'student') hintT.textContent = 'Your 10% student discount is added at checkout.';
+    else if (session && session.role === 'lecturer') { hintT.textContent = 'Teaching with this book? '; var rl = el('button', 'linkish', 'Add it to a course reading list'); rl.type = 'button'; rl.dataset.later = 'faculty'; hintT.appendChild(rl); }
+    else if (session) document.getElementById('hint').hidden = true;
     document.title = b.title + ' · GCTU Bookshop';
     var crumbs = document.getElementById('crumbs');
     var h = el('a', null, 'Home'); h.href = '/'; var gl = el('a', null, G.name); gl.href = '/browse/?genre=' + b.genre;
@@ -503,8 +548,106 @@
     setTimeout(function () { if (!seen) items.forEach(function (x) { x.classList.remove('wait'); }); }, 2500);
   }
 
+  // ---------- sign-in (one page, a tab per role) ----------
+  var ROLES = {
+    student: { id: 'Student ID', line: 'For current GCTU students. Students get 10% off at checkout.', aux: 'No sign-up form: the librarian adds current students, and access ends automatically after graduation. Forgot your password? The librarian can reset it.' },
+    lecturer: { id: 'Staff ID', line: 'For lecturers. Buy books and make course reading lists.', aux: '' },
+    librarian: { id: 'Staff ID', line: 'For the bookshop librarian: books, orders, people and promotions.', aux: 'Librarian accounts are set up by the university’s IT team, not from this page.' }
+  };
+  function demoSignIn(role) {
+    saveSession(role);
+    var next = safeNext(params.get('next'));
+    if (next && /^\/sign-in\//.test(next)) next = null;
+    var d = DEMO[role];
+    flash('Signed in as ' + d.name + ' (' + d.label.toLowerCase() + ').' + (role === 'lecturer' ? ' The Faculty desk opens in stage 3.' : role === 'librarian' ? ' The dashboard opens in stage 4.' : ''));
+    location.href = next || '/';
+  }
+  function signin() {
+    var main = document.getElementById('main'), roles = document.getElementById('roles');
+    var uid = document.getElementById('uid'), pw = document.getElementById('pw'), msg = document.getElementById('msg');
+    var start = params.get('as'); if (!ROLES[start]) start = 'student';
+    function setRole(r) {
+      main.dataset.role = r;
+      roles.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.role === r)); });
+      document.getElementById('uid-l').textContent = ROLES[r].id;
+      document.getElementById('role-line').textContent = ROLES[r].line;
+      var aux = document.getElementById('aux'); aux.replaceChildren();
+      if (r === 'lecturer') { aux.appendChild(document.createTextNode('First time? ')); var a = el('a', null, 'Use the setup code from the librarian'); a.href = '/sign-in/first-time/'; aux.appendChild(a); aux.appendChild(document.createTextNode('. Lecturers pay the normal price; general promo codes will work for everyone.')); }
+      else aux.textContent = ROLES[r].aux;
+      clearErrors(); msg.hidden = true;
+    }
+    roles.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) setRole(b.dataset.role); });
+    function fieldError(input, text) { var e = document.getElementById(input.id + '-e'); e.textContent = text; input.setAttribute('aria-invalid', text ? 'true' : 'false'); }
+    function clearErrors() { fieldError(uid, ''); fieldError(pw, ''); }
+    document.getElementById('pw-t').addEventListener('click', function () { var show = pw.type === 'password'; pw.type = show ? 'text' : 'password'; this.textContent = show ? 'Hide' : 'Show'; this.setAttribute('aria-pressed', String(show)); });
+    document.getElementById('signin-form').addEventListener('submit', function (e) {
+      e.preventDefault(); clearErrors(); msg.hidden = true;
+      var label = document.getElementById('uid-l').textContent;
+      if (!uid.value.trim()) fieldError(uid, 'Enter your ' + label.toLowerCase().replace(' id', ' ID') + '.');
+      if (!pw.value) fieldError(pw, 'Enter your password.');
+      if (!uid.value.trim()) { uid.focus(); return; }
+      if (!pw.value) { pw.focus(); return; }
+      // Real sign-in is switched off on the public demo: nothing typed is kept or sent anywhere.
+      uid.value = ''; pw.value = ''; pw.type = 'password';
+      msg.textContent = 'Real sign-in is switched off in this public demo, so nothing you typed was kept or sent. Use one of the demo accounts instead.';
+      msg.hidden = false;
+      var first = document.querySelector('[data-demo="' + main.dataset.role + '"]'); if (first) first.focus();
+    });
+    document.querySelectorAll('[data-demo]').forEach(function (b) { b.addEventListener('click', function () { demoSignIn(b.dataset.demo); }); });
+    if (params.get('why') === 'buy') { var ret = document.getElementById('ret'); ret.hidden = false; ret.textContent = 'Sign in to buy. You’ll come straight back to where you were.'; }
+    if (session) {
+      var s = document.getElementById('signed'); s.hidden = false;
+      s.appendChild(document.createTextNode('You’re signed in as ' + DEMO[session.role].name + '. Pick another demo account to switch, or '));
+      var so = el('button', 'linkish', 'sign out'); so.type = 'button'; so.addEventListener('click', function () { clearSession(); flash('Signed out.'); location.href = '/sign-in/'; });
+      s.appendChild(so); s.appendChild(document.createTextNode('.'));
+    }
+    setRole(start);
+  }
+
+  // ---------- lecturer first sign-in (setup code) ----------
+  var DEMO_STAFF = 'STAFF-DEMO-07', DEMO_CODE = 'K7Q-42M';
+  function firstTime() {
+    var steps = document.querySelectorAll('.wstep'), bars = document.querySelectorAll('.wiz i');
+    function go(n) {
+      steps.forEach(function (s) { s.hidden = s.dataset.w !== String(n); });
+      bars.forEach(function (b, i) { b.classList.toggle('on', i < n); });
+      document.getElementById('wz-step').textContent = 'Step ' + n + ' of 3';
+      var f = document.querySelector('.wstep[data-w="' + n + '"] input, .wstep[data-w="' + n + '"] h2, .wstep[data-w="' + n + '"] button');
+      if (f) { if (f.tagName === 'H2') f.setAttribute('tabindex', '-1'); f.focus(); }
+    }
+    var sid = document.getElementById('sid'), code = document.getElementById('code');
+    function err(input, text) { document.getElementById(input.id + '-e').textContent = text; input.setAttribute('aria-invalid', text ? 'true' : 'false'); }
+    document.getElementById('use-demo').addEventListener('click', function () { sid.value = DEMO_STAFF; code.value = DEMO_CODE; err(sid, ''); err(code, ''); });
+    document.getElementById('w1').addEventListener('submit', function (e) {
+      e.preventDefault(); err(sid, ''); err(code, '');
+      var s = sid.value.trim().toUpperCase(), c = code.value.trim().toUpperCase();
+      if (!s) { err(sid, 'Enter your staff ID.'); sid.focus(); return; }
+      if (!c) { err(code, 'Enter the setup code from the librarian.'); code.focus(); return; }
+      if (s !== DEMO_STAFF || c !== DEMO_CODE) { code.value = ''; err(code, 'That code isn’t valid. Codes work once and last 7 days; ask the librarian for a new one. In this demo, press “Use the demo code”.'); code.focus(); return; }
+      go(2);
+    });
+    var np = document.getElementById('np'), np2 = document.getElementById('np2'), rules = document.getElementById('np-rules');
+    function check() {
+      var ok = { len: np.value.length >= 10, mix: /[a-z]/i.test(np.value) && /\d/.test(np.value), match: np.value.length > 0 && np.value === np2.value };
+      rules.querySelectorAll('li').forEach(function (li) { li.classList.toggle('ok', ok[li.dataset.rule]); });
+      return ok.len && ok.mix && ok.match;
+    }
+    np.addEventListener('input', check); np2.addEventListener('input', check);
+    document.querySelectorAll('.pw-t').forEach(function (b) { b.addEventListener('click', function () { var i = document.getElementById(b.getAttribute('aria-controls')), show = i.type === 'password'; i.type = show ? 'text' : 'password'; np2.type = i.type; b.textContent = show ? 'Hide' : 'Show'; b.setAttribute('aria-pressed', String(show)); }); });
+    document.getElementById('w2').addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!check()) { rules.classList.add('shake'); setTimeout(function () { rules.classList.remove('shake'); }, 500); np.focus(); return; }
+      np.value = ''; np2.value = ''; // never kept
+      go(3);
+    });
+    document.getElementById('w-done').addEventListener('click', function () { demoSignIn('lecturer'); });
+  }
+
   // ---------- start ----------
   buildHeader(); buildFooter(); buildTabbar(); tilt();
+  try { var fl = sessionStorage.getItem('gb-flash'); if (fl) { sessionStorage.removeItem('gb-flash'); setTimeout(function () { toast(fl); }, 300); } } catch (e) {}
+  if (page === 'signin') signin();
+  if (page === 'firsttime') firstTime();
   fetch('/data/books.json').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
     DATA = d; d.genres.forEach(function (g) { GENRES[g.id] = g; }); GENRES.text = GENRES.text || { name: 'Course textbooks' };
     if (page === 'home') home();

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sign in · GCTU Bookshop</title>
+<meta name="description" content="GCTU Bookshop: a student concept demo of an online bookshop for university students and lecturers. Not an official GCTU service.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1c2957">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/fraunces-normal-latin-48642176.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/dm-sans-normal-latin-c57593e0.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/css/styles.css">
+<script src="/js/app.js" defer></script>
+</head>
+<body data-page="signin">
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-top"></div>
+<main id="main" class="auth-page" data-role="student">
+  <div class="wrap auth">
+    <section class="auth-card" aria-labelledby="si-title">
+      <p class="ret" id="ret" hidden></p>
+      <p class="signed" id="signed" hidden></p>
+      <h1 id="si-title">Sign in</h1>
+      <div class="roles" id="roles" role="group" aria-label="I am signing in as">
+        <span class="pill" aria-hidden="true"></span>
+        <button type="button" data-role="student" aria-pressed="true">Student</button>
+        <button type="button" data-role="lecturer" aria-pressed="false">Lecturer</button>
+        <button type="button" data-role="librarian" aria-pressed="false">Librarian</button>
+      </div>
+      <p class="role-line" id="role-line"></p>
+      <form id="signin-form" novalidate>
+        <div class="fld">
+          <label for="uid" id="uid-l">Student ID</label>
+          <input id="uid" name="uid" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="uid-e">
+          <span class="err" id="uid-e"></span>
+        </div>
+        <div class="fld">
+          <label for="pw">Password</label>
+          <div class="pw"><input id="pw" name="pw" type="password" autocomplete="off" aria-describedby="pw-e"><button type="button" id="pw-t" aria-pressed="false" aria-controls="pw">Show</button></div>
+          <span class="err" id="pw-e"></span>
+        </div>
+        <p class="msg" id="msg" role="alert" hidden></p>
+        <button class="btn wide accent" type="submit">Sign in</button>
+      </form>
+      <p class="aux" id="aux"></p>
+    </section>
+    <aside class="demo-card" aria-labelledby="demo-title">
+      <h2 id="demo-title">Explore the demo</h2>
+      <p>One click, no ID needed. Real IDs and passwords are never accepted on this public demo.</p>
+      <div class="demos">
+        <button type="button" class="dbtn" data-demo="student"><span class="av">AO</span><span><b>Try as a student</b><span>Ama Owusu · gets the 10% student price</span></span></button>
+        <button type="button" class="dbtn" data-demo="lecturer"><span class="av">KM</span><span><b>Try as a lecturer</b><span>Dr. K. Mensah · normal prices, reading lists</span></span></button>
+        <button type="button" class="dbtn" data-demo="librarian"><span class="av">LB</span><span><b>Try as the librarian</b><span>Runs the shop: books, orders, people, promotions</span></span></button>
+      </div>
+      <p class="small">There is no public sign-up. In the real system the librarian creates accounts for current students and staff.</p>
+    </aside>
+  </div>
+</main>
+<div id="site-footer"></div>
+</body>
+</html>

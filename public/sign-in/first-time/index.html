@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lecturer first sign-in · GCTU Bookshop</title>
+<meta name="description" content="GCTU Bookshop: a student concept demo of an online bookshop for university students and lecturers. Not an official GCTU service.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1c2957">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/fraunces-normal-latin-48642176.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/dm-sans-normal-latin-c57593e0.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/css/styles.css">
+<script src="/js/app.js" defer></script>
+</head>
+<body data-page="firsttime">
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-top"></div>
+<main id="main" class="auth-page" data-role="lecturer">
+  <div class="wrap"><div class="onb">
+    <aside class="onb-l" aria-labelledby="how-title">
+      <p class="eyebrow">Faculty desk</p>
+      <h2 id="how-title">How lecturers get an account</h2>
+      <ol>
+        <li><span><b>The librarian adds you</b>, one at a time or from the department’s staff list, and sets the courses you teach.</span></li>
+        <li><span><b>You get a one-time setup code</b> from the librarian. It works once and lasts 7 days.</span></li>
+        <li><span><b>First sign-in:</b> staff ID and setup code, then choose your own password.</span></li>
+        <li><span><b>After that</b>, sign in with your staff ID and password on the normal sign-in page.</span></li>
+      </ol>
+      <p class="leave"><b>Leaving the university?</b> The librarian switches the account off, and your reading lists are handed to another lecturer or hidden.</p>
+    </aside>
+    <section class="onb-r" aria-labelledby="wz-title">
+      <div class="wiz" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+      <p class="sr-only" id="wz-step" aria-live="polite">Step 1 of 3</p>
+      <form class="wstep" data-w="1" id="w1" novalidate>
+        <h1 id="wz-title">First sign-in for lecturers</h1>
+        <p>Enter your staff ID and the setup code the librarian gave you.</p>
+        <div class="fld"><label for="sid">Staff ID</label><input id="sid" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="sid-e"><span class="err" id="sid-e"></span></div>
+        <div class="fld"><label for="code">Setup code</label><input id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="code-e"><span class="err" id="code-e"></span></div>
+        <div class="btns"><button class="btn accent" type="submit">Continue →</button><button class="btn line" type="button" id="use-demo">Use the demo code</button></div>
+        <p class="small">This public demo only accepts its demo code. Real staff IDs are never accepted.</p>
+      </form>
+      <form class="wstep" data-w="2" id="w2" hidden novalidate>
+        <h2>Choose your password</h2>
+        <p>You’ll use it with your staff ID from now on.</p>
+        <div class="fld"><label for="np">New password</label><div class="pw"><input id="np" type="password" autocomplete="off" aria-describedby="np-rules"><button type="button" class="pw-t" aria-controls="np" aria-pressed="false">Show</button></div></div>
+        <ul class="rules" id="np-rules"><li data-rule="len">At least 10 characters</li><li data-rule="mix">Letters and at least one number</li><li data-rule="match">Both boxes match</li></ul>
+        <div class="fld"><label for="np2">Type it again</label><input id="np2" type="password" autocomplete="off"></div>
+        <p class="small">In this demo the password isn’t saved anywhere.</p>
+        <div class="btns"><button class="btn accent" type="submit">Save password →</button></div>
+      </form>
+      <div class="wstep" data-w="3" hidden>
+        <h2>Your courses this semester</h2>
+        <p>Set by the librarian. You can make a reading list for each one.</p>
+        <ul class="courses"><li><b>CSC 205</b> Data Structures · Level 200</li><li><b>CSC 301</b> Operating Systems · Level 300</li><li><b>STAT 201</b> Introductory Statistics · Level 200</li></ul>
+        <p class="small">Something wrong or missing? Message the librarian; only the librarian can change courses.</p>
+        <div class="btns"><button class="btn accent" type="button" id="w-done">Finish and sign in →</button></div>
+      </div>
+    </section>
+  </div></div>
+</main>
+<div id="site-footer"></div>
+</body>
+</html>
