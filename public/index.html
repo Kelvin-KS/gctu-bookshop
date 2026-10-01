@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GCTU Bookshop · student concept demo</title>
+<meta name="description" content="GCTU Bookshop: a student concept demo of an online bookshop for university students and lecturers. Not an official GCTU service.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1c2957">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/fraunces-normal-latin-48642176.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/dm-sans-normal-latin-c57593e0.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/css/styles.css">
+<script src="/js/app.js" defer></script>
+</head>
+<body data-page="home">
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-top"></div>
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-copy">
+        <p class="eyebrow">For GCTU students &amp; lecturers</p>
+        <h1 id="hero-title">Every book for your course, <em>without the queue.</em></h1>
+        <p class="lead">Read e-books right away, or pick up a hard copy on campus. Delivery anywhere in Ghana.</p>
+        <div class="btns">
+          <a class="btn gold" href="/browse/">Browse books <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn ghost" href="/browse/?genre=text">Course textbooks</a>
+        </div>
+        <div class="hero-facts"><span><b>E-book</b> or <b>hard copy</b></span><span><b>Students</b> get 10% off at checkout</span><span><b>Paystack</b> test mode</span></div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="chips-wrap" aria-label="Genres">
+    <div class="wrap"><div class="chips" id="home-chips"></div></div>
+  </nav>
+
+  <section class="section" aria-labelledby="pop-title">
+    <div class="wrap">
+      <div class="s-head rv">
+        <div><h2 id="pop-title">Popular this semester</h2><p>What GCTU readers are opening right now.</p></div>
+        <div class="progress" aria-hidden="true"><i></i></div>
+      </div>
+      <div id="shelf-popular"></div>
+    </div>
+  </section>
+
+  <section class="section" id="genres" aria-labelledby="genres-title">
+    <div class="wrap">
+      <div class="s-head rv"><div><h2 id="genres-title">Find your next read</h2><p>Public-domain classics and free textbooks, sorted the way students search.</p></div><a class="see" href="/browse/">All books <span class="arr" aria-hidden="true">→</span></a></div>
+      <div class="tiles" id="tiles"></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="text-title">
+    <div class="wrap">
+      <div class="s-head rv">
+        <div><h2 id="text-title">Course textbooks</h2><p>OpenStax books: free to read as e-books, printed copies at cost.</p></div>
+        <div class="progress" aria-hidden="true"><i></i></div>
+      </div>
+      <div id="shelf-text"></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="myst-title">
+    <div class="wrap">
+      <div class="s-head rv">
+        <div><h2 id="myst-title">Mystery &amp; Crime</h2><p>Sherlock Holmes, a cursed diamond and a priest who reads people.</p></div>
+        <div class="progress" aria-hidden="true"><i></i></div>
+      </div>
+      <div id="shelf-myst"></div>
+    </div>
+  </section>
+
+  <section class="section" id="delivery" aria-labelledby="del-title">
+    <div class="wrap">
+      <div class="s-head rv"><div><h2 id="del-title">Getting your books</h2><p>Times and fees are demo values.</p></div></div>
+      <div class="trust">
+        <div class="rv"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10 12 4l9 6v10H3z"/><path d="M9 20v-6h6v6"/></svg><p><b>Free campus pickup</b><span>Ready in 1–2 working days. Show your 4-digit code at the bookshop.</span></p></div>
+        <div class="rv"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg><p><b>Delivery across Ghana</b><span>Accra in 2–3 days (GH₵ 25). Other regions by courier, 3–5 days (GH₵ 45).</span></p></div>
+        <div class="rv"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h6"/></svg><p><b>E-books instantly</b><span>They appear in My Library as soon as payment clears.</span></p></div>
+        <div class="rv"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><p><b>Secure payment</b><span>Paystack card or mobile money (test mode in this demo).</span></p></div>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="site-footer"></div>
+</body>
+</html>

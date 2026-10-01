@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Browse · GCTU Bookshop</title>
+<meta name="description" content="GCTU Bookshop: a student concept demo of an online bookshop for university students and lecturers. Not an official GCTU service.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1c2957">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/fraunces-normal-latin-48642176.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/dm-sans-normal-latin-c57593e0.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/css/styles.css">
+<script src="/js/app.js" defer></script>
+</head>
+<body data-page="browse">
+<a class="skip" href="#main">Skip to content</a>
+<div id="site-top"></div>
+<main id="main">
+  <div class="wrap">
+    <div class="page-head"><p class="eyebrow">Browse</p><h1 id="cat-title">All books</h1><p id="cat-sub"></p></div>
+    <nav aria-label="Genres"><div class="chips" id="cat-chips"></div></nav>
+    <div class="catx">
+      <form class="filters" id="filters" aria-label="Filters">
+        <fieldset><legend>Show prices for</legend>
+          <label><input type="radio" name="mode" value="ebook" checked> E-book</label>
+          <label><input type="radio" name="mode" value="hard"> Hard copy</label>
+        </fieldset>
+        <fieldset><legend>Availability</legend>
+          <label><input type="checkbox" id="f-stock"> Hard copy in stock</label>
+          <label><input type="checkbox" id="f-free"> Free e-books only</label>
+        </fieldset>
+        <fieldset><legend>Where the books come from</legend>
+          <p class="filter-note">Public-domain classics and OpenStax textbooks (CC BY 4.0). No copyrighted titles.</p>
+        </fieldset>
+      </form>
+      <div>
+        <div class="toolbar">
+          <span id="cat-count" aria-live="polite"></span>
+          <span class="tb-r">
+            <button class="btn line sm filter-toggle" id="filter-toggle" type="button" aria-controls="filters" aria-expanded="false">Filters</button>
+            <label class="sr-only" for="sort">Sort by</label>
+            <select id="sort"><option value="pop">Most popular</option><option value="az">Title A–Z</option><option value="low">Price: low to high</option><option value="new">Newest first</option></select>
+          </span>
+        </div>
+        <div class="grid" id="cat-grid"></div>
+      </div>
+    </div>
+  </div>
+</main>
+<div id="site-footer"></div>
+</body>
+</html>
