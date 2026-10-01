@@ -307,7 +307,8 @@
   // ---------- start ----------
   Promise.all(['/data/books.json', '/data/reading-lists.json', '/data/admin-sample.json', '/data/messages-sample.json'].map(function (u) { return fetch(u).then(function (r) { return r.json(); }); })).then(function (d) {
     CAT = d[0]; RL = d[1]; SAMPLE = d[2]; GBMessages.init(d[3]);
-    ADMIN = readJSON('gb-admin'); if (!ADMIN || ADMIN.v !== 1) ADMIN = null;
+    // Ignore admin data saved before students had courses (the admin page refreshes it on its next visit).
+    ADMIN = readJSON('gb-admin'); if (!ADMIN || ADMIN.v !== 1 || !(ADMIN.students || []).some(function (s) { return s.courses; })) ADMIN = null;
     LS = readJSON('gb-lists'); if (!LS || LS.v !== 1) { LS = { v: 1, lists: JSON.parse(JSON.stringify(RL.lists)), requests: [] }; saveLists(); }
     var rec = (ADMIN ? ADMIN.lecturers : SAMPLE.lecturers).filter(function (l) { return l.id === RL.lecturer; })[0] || SAMPLE.lecturers[0];
     ME = { id: rec.id, name: rec.name, courses: rec.courses.slice(), status: rec.status };

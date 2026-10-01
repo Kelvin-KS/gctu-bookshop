@@ -42,7 +42,7 @@
   "CSC 205": {
    "by": "DEMO-T-0007",
    "published": true,
-   "intro": "Read the starred books before week 4. We use them for algorithm analysis.",
+   "intro": "Read the essential books before week 4. We use them for algorithm analysis.",
    "items": [
     {
      "id": "intro-stats",
