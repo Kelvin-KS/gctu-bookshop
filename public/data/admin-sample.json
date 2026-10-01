@@ -1,0 +1,1834 @@
+{
+ "note": "Sample admin data for the public demo. All people and IDs are fictional.",
+ "students": [
+  {
+   "id": "DEMO-S-1040",
+   "name": "Ama Owusu",
+   "programme": "BSc Computer Science",
+   "level": 200,
+   "graduates": "2029-07-31"
+  },
+  {
+   "id": "DEMO-S-1047",
+   "name": "Kwame Asante",
+   "programme": "BSc Information Technology",
+   "level": 300,
+   "graduates": "2028-07-31"
+  },
+  {
+   "id": "DEMO-S-1054",
+   "name": "Efua Mensah",
+   "programme": "BSc Business Administration",
+   "level": 100,
+   "graduates": "2030-07-31"
+  },
+  {
+   "id": "DEMO-S-1061",
+   "name": "Yaw Boateng",
+   "programme": "BSc Computer Engineering",
+   "level": 400,
+   "graduates": "2027-07-31"
+  },
+  {
+   "id": "DEMO-S-1068",
+   "name": "Akosua Darko",
+   "programme": "BSc Accounting",
+   "level": 200,
+   "graduates": "2029-07-31"
+  },
+  {
+   "id": "DEMO-S-1075",
+   "name": "Kofi Adjei",
+   "programme": "BSc Telecommunication Engineering",
+   "level": 300,
+   "graduates": "2028-07-31"
+  },
+  {
+   "id": "DEMO-S-1082",
+   "name": "Abena Ofori",
+   "programme": "BSc Economics",
+   "level": 100,
+   "graduates": "2030-07-31"
+  },
+  {
+   "id": "DEMO-S-1089",
+   "name": "Kojo Appiah",
+   "programme": "BSc Computer Science",
+   "level": 400,
+   "graduates": "2027-07-31"
+  },
+  {
+   "id": "DEMO-S-1096",
+   "name": "Adwoa Sarpong",
+   "programme": "BSc Psychology",
+   "level": 200,
+   "graduates": "2029-07-31"
+  },
+  {
+   "id": "DEMO-S-1103",
+   "name": "Nana Yeboah",
+   "programme": "BSc Information Technology",
+   "level": 100,
+   "graduates": "2030-07-31"
+  },
+  {
+   "id": "DEMO-S-1110",
+   "name": "Esi Quaye",
+   "programme": "BSc Mathematics",
+   "level": 300,
+   "graduates": "2028-07-31"
+  },
+  {
+   "id": "DEMO-S-1117",
+   "name": "Kwesi Amoako",
+   "programme": "BSc Business Administration",
+   "level": 400,
+   "graduates": "2027-07-31"
+  },
+  {
+   "id": "DEMO-S-0991",
+   "name": "Yaa Asantewaa Boakye",
+   "programme": "BSc Computer Science",
+   "level": 400,
+   "graduates": "2026-07-31"
+  }
+ ],
+ "lecturers": [
+  {
+   "id": "DEMO-T-0007",
+   "name": "Dr. K. Mensah",
+   "department": "Computer Science",
+   "courses": [
+    "CSC 205",
+    "CSC 301",
+    "STAT 201"
+   ],
+   "status": "active"
+  },
+  {
+   "id": "DEMO-T-0012",
+   "name": "Mrs. A. Owusu-Ansah",
+   "department": "Business",
+   "courses": [
+    "BUS 101",
+    "MGT 201"
+   ],
+   "status": "active"
+  },
+  {
+   "id": "DEMO-T-0019",
+   "name": "Mr. J. Tetteh",
+   "department": "Mathematics",
+   "courses": [
+    "MATH 101"
+   ],
+   "status": "setup",
+   "codeDaysLeft": 5
+  },
+  {
+   "id": "DEMO-T-0003",
+   "name": "Prof. E. Agyeman",
+   "department": "Economics",
+   "courses": [
+    "ECON 101"
+   ],
+   "status": "off"
+  }
+ ],
+ "orders": [
+  {
+   "items": [
+    {
+     "id": "invisible-man",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "hamlet",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "journey-centre",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "done",
+   "daysAgo": 27,
+   "time": "10:05",
+   "code": "8316",
+   "student": "DEMO-S-1068",
+   "id": "GB-1001"
+  },
+  {
+   "items": [
+    {
+     "id": "intro-business",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "accounting-1",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "accra",
+   "status": "done",
+   "daysAgo": 27,
+   "time": "08:38",
+   "code": "1238",
+   "student": "DEMO-S-1103",
+   "id": "GB-1002"
+  },
+  {
+   "items": [
+    {
+     "id": "economics",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    },
+    {
+     "id": "workplace-software",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "accra",
+   "status": "done",
+   "daysAgo": 27,
+   "time": "11:12",
+   "code": "7298",
+   "student": "DEMO-S-1061",
+   "id": "GB-1003"
+  },
+  {
+   "items": [
+    {
+     "id": "accounting-1",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 26,
+   "time": "17:24",
+   "code": "5854",
+   "student": "DEMO-S-1082",
+   "id": "GB-1004"
+  },
+  {
+   "items": [
+    {
+     "id": "jane-eyre",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "hamlet",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 26,
+   "time": "13:53",
+   "code": "8240",
+   "student": "DEMO-S-1089",
+   "id": "GB-1005"
+  },
+  {
+   "items": [
+    {
+     "id": "maths-set",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 2
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 25,
+   "time": "10:38",
+   "code": "7287",
+   "student": "DEMO-S-1047",
+   "id": "GB-1006"
+  },
+  {
+   "items": [
+    {
+     "id": "woman-white",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "casio-fx82es",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "accra",
+   "status": "done",
+   "daysAgo": 25,
+   "time": "13:38",
+   "code": "8499",
+   "student": "DEMO-S-1089",
+   "id": "GB-1007"
+  },
+  {
+   "items": [
+    {
+     "id": "accounting-1",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 24,
+   "time": "08:38",
+   "code": "9762",
+   "student": "DEMO-S-1117",
+   "id": "GB-1008"
+  },
+  {
+   "items": [
+    {
+     "id": "intro-stats",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "management",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 24,
+   "time": "08:24",
+   "code": "9269",
+   "student": "DEMO-S-1047",
+   "id": "GB-1009"
+  },
+  {
+   "items": [
+    {
+     "id": "intro-business",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    },
+    {
+     "id": "python",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "python",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "done",
+   "daysAgo": 23,
+   "time": "19:38",
+   "code": "9070",
+   "student": "DEMO-S-1103",
+   "id": "GB-1010"
+  },
+  {
+   "items": [
+    {
+     "id": "management",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "none",
+   "status": "done",
+   "daysAgo": 22,
+   "time": "08:47",
+   "code": "7490",
+   "student": "DEMO-S-1089",
+   "id": "GB-1011"
+  },
+  {
+   "items": [
+    {
+     "id": "father-brown",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "done",
+   "daysAgo": 22,
+   "time": "11:05",
+   "code": "7040",
+   "student": "DEMO-S-1075",
+   "id": "GB-1012"
+  },
+  {
+   "items": [
+    {
+     "id": "journey-centre",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "macbeth",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "accra",
+   "status": "done",
+   "daysAgo": 22,
+   "time": "16:38",
+   "code": "6167",
+   "student": "DEMO-S-1117",
+   "id": "GB-1013"
+  },
+  {
+   "items": [
+    {
+     "id": "war-worlds",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "done",
+   "daysAgo": 22,
+   "time": "18:24",
+   "code": "2277",
+   "student": "DEMO-S-1110",
+   "id": "GB-1014"
+  },
+  {
+   "items": [
+    {
+     "id": "dracula",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "none",
+   "status": "done",
+   "daysAgo": 21,
+   "time": "12:53",
+   "code": "4239",
+   "student": "DEMO-S-1117",
+   "id": "GB-1015"
+  },
+  {
+   "items": [
+    {
+     "id": "casio-fx991ex",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "kingston-dt",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "done",
+   "daysAgo": 21,
+   "time": "10:47",
+   "code": "4346",
+   "student": "DEMO-S-1110",
+   "id": "GB-1016"
+  },
+  {
+   "items": [
+    {
+     "id": "sandisk-cruzer",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "done",
+   "daysAgo": 21,
+   "time": "17:12",
+   "code": "4811",
+   "student": "DEMO-S-1117",
+   "id": "GB-1017"
+  },
+  {
+   "items": [
+    {
+     "id": "wuthering",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "woman-white",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "accra",
+   "status": "done",
+   "daysAgo": 19,
+   "time": "13:53",
+   "code": "1728",
+   "student": "DEMO-S-1117",
+   "id": "GB-1018"
+  },
+  {
+   "items": [
+    {
+     "id": "dolls-house",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 19,
+   "time": "19:47",
+   "code": "9198",
+   "student": "DEMO-S-1103",
+   "id": "GB-1019"
+  },
+  {
+   "items": [
+    {
+     "id": "war-worlds",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "none",
+   "status": "done",
+   "daysAgo": 19,
+   "time": "12:53",
+   "code": "3692",
+   "student": "DEMO-S-1096",
+   "id": "GB-1020"
+  },
+  {
+   "items": [
+    {
+     "id": "data-science",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    },
+    {
+     "id": "data-science",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "management",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "accra",
+   "status": "done",
+   "daysAgo": 17,
+   "time": "17:05",
+   "code": "7905",
+   "student": "DEMO-S-1040",
+   "id": "GB-1021"
+  },
+  {
+   "items": [
+    {
+     "id": "laptop-bag",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 2
+    },
+    {
+     "id": "samsung-fit",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "dolls-house",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 17,
+   "time": "17:53",
+   "code": "8967",
+   "student": "DEMO-S-1068",
+   "id": "GB-1022"
+  },
+  {
+   "items": [
+    {
+     "id": "laptop-bag",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 16,
+   "time": "17:12",
+   "code": "9505",
+   "student": "DEMO-S-1061",
+   "id": "GB-1023"
+  },
+  {
+   "items": [
+    {
+     "id": "calculus-1",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    },
+    {
+     "id": "intro-stats",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 15,
+   "time": "16:05",
+   "code": "5161",
+   "student": "DEMO-S-1075",
+   "id": "GB-1024"
+  },
+  {
+   "items": [
+    {
+     "id": "macbeth",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "accra",
+   "status": "done",
+   "daysAgo": 14,
+   "time": "19:38",
+   "code": "7877",
+   "student": "DEMO-S-1047",
+   "id": "GB-1025"
+  },
+  {
+   "items": [
+    {
+     "id": "bic-cristal",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 2
+    },
+    {
+     "id": "maths-set",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 2
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 14,
+   "time": "10:53",
+   "code": "3525",
+   "student": "DEMO-S-1068",
+   "id": "GB-1026"
+  },
+  {
+   "items": [
+    {
+     "id": "laptop-bag",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 2
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 12,
+   "time": "09:24",
+   "code": "6449",
+   "student": "DEMO-S-1040",
+   "id": "GB-1027"
+  },
+  {
+   "items": [
+    {
+     "id": "accounting-1",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 12,
+   "time": "14:38",
+   "code": "9601",
+   "student": "DEMO-S-1075",
+   "id": "GB-1028"
+  },
+  {
+   "items": [
+    {
+     "id": "data-science",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 12,
+   "time": "19:24",
+   "code": "5005",
+   "student": "DEMO-S-1103",
+   "id": "GB-1029"
+  },
+  {
+   "items": [
+    {
+     "id": "intro-business",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "none",
+   "status": "done",
+   "daysAgo": 12,
+   "time": "11:12",
+   "code": "4187",
+   "student": "DEMO-S-1047",
+   "id": "GB-1030"
+  },
+  {
+   "items": [
+    {
+     "id": "workplace-software",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "intro-stats",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    },
+    {
+     "id": "intro-stats",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 11,
+   "time": "14:05",
+   "code": "1276",
+   "student": "DEMO-S-1110",
+   "id": "GB-1031"
+  },
+  {
+   "items": [
+    {
+     "id": "sign-four",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "none",
+   "status": "done",
+   "daysAgo": 10,
+   "time": "11:53",
+   "code": "7416",
+   "student": "DEMO-S-1068",
+   "id": "GB-1032"
+  },
+  {
+   "items": [
+    {
+     "id": "turn-screw",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    },
+    {
+     "id": "frankenstein",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "woman-white",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 8,
+   "time": "19:05",
+   "code": "2133",
+   "student": "DEMO-S-1068",
+   "id": "GB-1033"
+  },
+  {
+   "items": [
+    {
+     "id": "psychology",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "python",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "accra",
+   "status": "done",
+   "daysAgo": 8,
+   "time": "08:24",
+   "code": "4889",
+   "student": "DEMO-S-1054",
+   "id": "GB-1034"
+  },
+  {
+   "items": [
+    {
+     "id": "hound",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "jane-eyre",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 7,
+   "time": "14:47",
+   "code": "2643",
+   "student": "DEMO-S-1040",
+   "id": "GB-1035"
+  },
+  {
+   "items": [
+    {
+     "id": "casio-fx82es",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 7,
+   "time": "12:53",
+   "code": "2560",
+   "student": "DEMO-S-1103",
+   "id": "GB-1036"
+  },
+  {
+   "items": [
+    {
+     "id": "data-science",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "economics",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "accra",
+   "status": "done",
+   "daysAgo": 6,
+   "time": "15:38",
+   "code": "4225",
+   "student": "DEMO-S-1110",
+   "id": "GB-1037"
+  },
+  {
+   "items": [
+    {
+     "id": "nataraj-pencils",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "kingston-dt",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "samsung-fit",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 6,
+   "time": "16:47",
+   "code": "5472",
+   "student": "DEMO-S-1103",
+   "id": "GB-1038"
+  },
+  {
+   "items": [
+    {
+     "id": "north-south",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "wuthering",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 5,
+   "time": "19:53",
+   "code": "3023",
+   "student": "DEMO-S-1061",
+   "id": "GB-1039"
+  },
+  {
+   "items": [
+    {
+     "id": "frankenstein",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "scarlet",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "kingston-dt",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 5,
+   "time": "19:47",
+   "code": "6627",
+   "student": "DEMO-S-1096",
+   "id": "GB-1040"
+  },
+  {
+   "items": [
+    {
+     "id": "samsung-fit",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "done",
+   "daysAgo": 4,
+   "time": "08:05",
+   "code": "4116",
+   "student": "DEMO-S-1061",
+   "id": "GB-1041"
+  },
+  {
+   "items": [
+    {
+     "id": "casio-fx991ex",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "sandisk-cruzer",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 2
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 4,
+   "time": "13:12",
+   "code": "8378",
+   "student": "DEMO-S-1075",
+   "id": "GB-1042"
+  },
+  {
+   "items": [
+    {
+     "id": "monte-cristo",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    },
+    {
+     "id": "dracula",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "father-brown",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 4,
+   "time": "16:38",
+   "code": "7779",
+   "student": "DEMO-S-1082",
+   "id": "GB-1043"
+  },
+  {
+   "items": [
+    {
+     "id": "python",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "none",
+   "status": "done",
+   "daysAgo": 4,
+   "time": "12:38",
+   "code": "2589",
+   "student": "DEMO-S-1082",
+   "id": "GB-1044"
+  },
+  {
+   "items": [
+    {
+     "id": "backpack",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 3,
+   "time": "15:38",
+   "code": "3911",
+   "student": "DEMO-S-1110",
+   "id": "GB-1045"
+  },
+  {
+   "items": [
+    {
+     "id": "bic-cristal",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 2
+    },
+    {
+     "id": "casio-fx991ex",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "maths-set",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 3,
+   "time": "08:47",
+   "code": "2226",
+   "student": "DEMO-S-1089",
+   "id": "GB-1046"
+  },
+  {
+   "items": [
+    {
+     "id": "pens",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "bic-cristal",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 3,
+   "time": "19:05",
+   "code": "5535",
+   "student": "DEMO-S-1054",
+   "id": "GB-1047"
+  },
+  {
+   "items": [
+    {
+     "id": "notebooks",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "casio-fx991ex",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "done",
+   "daysAgo": 3,
+   "time": "18:53",
+   "code": "5605",
+   "student": "DEMO-S-1103",
+   "id": "GB-1048"
+  },
+  {
+   "items": [
+    {
+     "id": "accounting-1",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 3,
+   "time": "16:47",
+   "code": "9434",
+   "student": "DEMO-S-1103",
+   "id": "GB-1049"
+  },
+  {
+   "items": [
+    {
+     "id": "north-south",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    },
+    {
+     "id": "eighty-days",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "accra",
+   "status": "done",
+   "daysAgo": 2,
+   "time": "11:05",
+   "code": "8027",
+   "student": "DEMO-S-1040",
+   "id": "GB-1050"
+  },
+  {
+   "items": [
+    {
+     "id": "dracula",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "none",
+   "status": "done",
+   "daysAgo": 2,
+   "time": "17:38",
+   "code": "1454",
+   "student": "DEMO-S-1096",
+   "id": "GB-1051"
+  },
+  {
+   "items": [
+    {
+     "id": "eighty-days",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "none",
+   "status": "done",
+   "daysAgo": 2,
+   "time": "12:12",
+   "code": "1373",
+   "student": "DEMO-S-1040",
+   "id": "GB-1052"
+  },
+  {
+   "id": "GB-1053",
+   "student": "DEMO-S-1110",
+   "items": [
+    {
+     "id": "samsung-fit",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 2
+    }
+   ],
+   "delivery": "accra",
+   "status": "done",
+   "daysAgo": 20,
+   "time": "13:12",
+   "code": "9989"
+  },
+  {
+   "id": "GB-1054",
+   "student": "DEMO-S-1110",
+   "items": [
+    {
+     "id": "calculus-1",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "none",
+   "status": "done",
+   "daysAgo": 19,
+   "time": "09:47",
+   "code": "3281"
+  },
+  {
+   "id": "GB-1055",
+   "student": "DEMO-S-1040",
+   "items": [
+    {
+     "id": "calculus-1",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "management",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "python",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "done",
+   "daysAgo": 17,
+   "time": "16:24",
+   "code": "2491"
+  },
+  {
+   "id": "GB-1056",
+   "student": "DEMO-S-1075",
+   "items": [
+    {
+     "id": "treasure",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 17,
+   "time": "09:12",
+   "code": "2673"
+  },
+  {
+   "id": "GB-1057",
+   "student": "DEMO-S-1047",
+   "items": [
+    {
+     "id": "maths-set",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "jane-eyre",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 13,
+   "time": "19:24",
+   "code": "5337"
+  },
+  {
+   "id": "GB-1058",
+   "student": "DEMO-S-1061",
+   "items": [
+    {
+     "id": "king-solomon",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "none",
+   "status": "done",
+   "daysAgo": 13,
+   "time": "15:12",
+   "code": "8109"
+  },
+  {
+   "id": "GB-1059",
+   "student": "DEMO-S-1054",
+   "items": [
+    {
+     "id": "invisible-man",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "father-brown",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 12,
+   "time": "10:05",
+   "code": "3476"
+  },
+  {
+   "id": "GB-1060",
+   "student": "DEMO-S-1096",
+   "items": [
+    {
+     "id": "pens",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 2
+    }
+   ],
+   "delivery": "ghana",
+   "status": "done",
+   "daysAgo": 10,
+   "time": "13:53",
+   "code": "4654"
+  },
+  {
+   "id": "GB-1061",
+   "student": "DEMO-S-1103",
+   "items": [
+    {
+     "id": "notebooks",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "accra",
+   "status": "done",
+   "daysAgo": 9,
+   "time": "17:05",
+   "code": "8855"
+  },
+  {
+   "id": "GB-1062",
+   "student": "DEMO-S-1075",
+   "items": [
+    {
+     "id": "war-worlds",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 8,
+   "time": "17:05",
+   "code": "2677"
+  },
+  {
+   "id": "GB-1063",
+   "student": "DEMO-S-1117",
+   "items": [
+    {
+     "id": "data-science",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "management",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 8,
+   "time": "08:05",
+   "code": "5577"
+  },
+  {
+   "id": "GB-1064",
+   "student": "DEMO-S-1082",
+   "items": [
+    {
+     "id": "pride",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "done",
+   "daysAgo": 3,
+   "time": "13:53",
+   "code": "7233"
+  },
+  {
+   "id": "GB-1065",
+   "student": "DEMO-S-1075",
+   "items": [
+    {
+     "id": "workplace-software",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "python",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "out",
+   "daysAgo": 3,
+   "time": "17:47",
+   "code": "6220"
+  },
+  {
+   "id": "GB-1066",
+   "student": "DEMO-S-1047",
+   "items": [
+    {
+     "id": "economics",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "ready",
+   "daysAgo": 2,
+   "time": "10:38",
+   "code": "7580"
+  },
+  {
+   "id": "GB-1067",
+   "student": "DEMO-S-1082",
+   "items": [
+    {
+     "id": "intro-stats",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "psychology",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "intro-stats",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "done",
+   "daysAgo": 2,
+   "time": "10:53",
+   "code": "5132"
+  },
+  {
+   "id": "GB-1068",
+   "student": "DEMO-S-1047",
+   "items": [
+    {
+     "id": "invisible-man",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "laptop-bag",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "preparing",
+   "daysAgo": 1,
+   "time": "17:24",
+   "code": "9604"
+  },
+  {
+   "id": "GB-1069",
+   "student": "DEMO-S-1089",
+   "items": [
+    {
+     "id": "casio-fx82es",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "carmilla",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "preparing",
+   "daysAgo": 1,
+   "time": "14:05",
+   "code": "2271"
+  },
+  {
+   "id": "GB-1070",
+   "student": "DEMO-S-1040",
+   "items": [
+    {
+     "id": "invisible-man",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "pride",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "preparing",
+   "daysAgo": 1,
+   "time": "19:53",
+   "code": "6072"
+  },
+  {
+   "id": "GB-1071",
+   "student": "DEMO-S-1047",
+   "items": [
+    {
+     "id": "treasure",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "treasure",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "preparing",
+   "daysAgo": 1,
+   "time": "15:05",
+   "code": "4575"
+  },
+  {
+   "id": "GB-1072",
+   "student": "DEMO-S-1110",
+   "items": [
+    {
+     "id": "python",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "ready",
+   "daysAgo": 1,
+   "time": "11:05",
+   "code": "8945"
+  },
+  {
+   "id": "GB-1073",
+   "student": "DEMO-S-1089",
+   "items": [
+    {
+     "id": "monte-cristo",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "monte-cristo",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "accra",
+   "status": "out",
+   "daysAgo": 1,
+   "time": "18:38",
+   "code": "2019"
+  },
+  {
+   "id": "GB-1074",
+   "student": "DEMO-S-1047",
+   "items": [
+    {
+     "id": "casio-fx991ex",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "paid",
+   "daysAgo": 0,
+   "time": "13:47",
+   "code": "1950"
+  },
+  {
+   "id": "GB-1075",
+   "student": "DEMO-S-1047",
+   "items": [
+    {
+     "id": "intro-stats",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "accra",
+   "status": "paid",
+   "daysAgo": 0,
+   "time": "11:05",
+   "code": "7955"
+  },
+  {
+   "id": "GB-1076",
+   "student": "DEMO-S-1040",
+   "items": [
+    {
+     "id": "dracula",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "moonstone",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    },
+    {
+     "id": "monte-cristo",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "paid",
+   "daysAgo": 0,
+   "time": "16:12",
+   "code": "5744"
+  },
+  {
+   "id": "GB-1077",
+   "student": "DEMO-S-1068",
+   "items": [
+    {
+     "id": "sandisk-cruzer",
+     "kind": "ess",
+     "format": "hard",
+     "qty": 1
+    }
+   ],
+   "delivery": "ghana",
+   "status": "paid",
+   "daysAgo": 0,
+   "time": "16:53",
+   "code": "3961"
+  },
+  {
+   "id": "GB-1078",
+   "student": "DEMO-S-1103",
+   "items": [
+    {
+     "id": "hamlet",
+     "kind": "book",
+     "format": "hard",
+     "qty": 1
+    },
+    {
+     "id": "thirty-nine",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    },
+    {
+     "id": "woman-white",
+     "kind": "book",
+     "format": "ebook",
+     "qty": 1
+    }
+   ],
+   "delivery": "pickup",
+   "status": "paid",
+   "daysAgo": 0,
+   "time": "11:38",
+   "code": "9711"
+  }
+ ],
+ "requests": [
+  {
+   "id": "RQ-31",
+   "student": "DEMO-S-1040",
+   "title": "Things Fall Apart",
+   "format": "Hard copy",
+   "status": "no",
+   "note": "Still under copyright, so we can't sell it as an e-book. Try the university library.",
+   "daysAgo": 19
+  },
+  {
+   "id": "RQ-34",
+   "student": "DEMO-S-1047",
+   "title": "CSC 301 operating systems text",
+   "format": "Either",
+   "status": "ordered",
+   "note": "Arriving in about two weeks.",
+   "daysAgo": 13
+  },
+  {
+   "id": "RQ-36",
+   "student": "DEMO-S-1054",
+   "title": "Principles of Accounting, Volume 2",
+   "format": "E-book",
+   "status": "waiting",
+   "note": "",
+   "daysAgo": 2
+  },
+  {
+   "id": "RQ-37",
+   "student": "DEMO-S-1068",
+   "title": "Casio fx-570 calculator",
+   "format": "Hard copy",
+   "status": "waiting",
+   "note": "",
+   "daysAgo": 1
+  }
+ ]
+}

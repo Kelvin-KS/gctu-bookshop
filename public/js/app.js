@@ -79,11 +79,11 @@
   };
   function accountSheet(opener) {
     var d = DEMO[session.role];
-    var next = session.role === 'lecturer' ? 'Your Faculty desk opens in stage 3.' : session.role === 'librarian' ? 'Your dashboard opens in stage 4.' : 'My Library, orders and messages arrive with the rest of stage 2.';
-    sheet(d.name, d.label + ' · signed in on this device only. ' + next, [], [
-      ['Sign out', 'navy', function () { clearSession(); flash('Signed out.'); location.href = '/'; }],
+    var next = session.role === 'lecturer' ? 'Your Faculty desk opens in stage 3.' : session.role === 'librarian' ? 'Your dashboard is at /admin/dashboard/.' : 'My Library, orders and messages arrive with the rest of stage 2.';
+    sheet(d.name, d.label + ' · signed in on this device only. ' + next, [], (session.role === 'librarian' ? [['Open the dashboard', 'navy', function () { location.href = '/admin/dashboard/'; }]] : []).concat([
+      ['Sign out', session.role === 'librarian' ? 'line' : 'navy', function () { clearSession(); flash('Signed out.'); location.href = '/'; }],
       ['Close', 'line']
-    ], opener);
+    ]), opener);
   }
   document.addEventListener('click', function (e) {
     var t = e.target.closest('[data-later],[data-acct]');
@@ -267,11 +267,45 @@
     prev.addEventListener('click', function () { step(-1); }); next.addEventListener('click', function () { step(1); });
   }
 
+  // ---------- changes made in the admin demo (same browser) ----------
+  // Until the database is connected, the librarian's edits live in localStorage "gb-admin".
+  // Only numbers and plain text are copied across, and they are shown with textContent.
+  var ADMIN = null;
+  function applyAdmin() {
+    try { ADMIN = JSON.parse(localStorage.getItem('gb-admin') || 'null'); } catch (e) { ADMIN = null; }
+    if (!ADMIN || ADMIN.v !== 1) { ADMIN = null; return; }
+    function num(v, lo, hi) { v = Number(v); return isFinite(v) && v >= lo && v <= hi ? Math.round(v) : null; }
+    DATA.books.forEach(function (b) {
+      var o = ADMIN.books && ADMIN.books[b.id]; if (!o) return;
+      var p = num(o.price, 1, 5000), s = num(o.saving, 3, 10), k = num(o.stock, 0, 9999);
+      if (p !== null) b.price = p; if (s !== null && b.source !== 'openstax') b.saving = s; if (k !== null) b.stock = k;
+    });
+    DATA.essentials.forEach(function (e) {
+      var o = ADMIN.ess && ADMIN.ess[e.id]; if (!o) return;
+      var p = num(o.price, 1, 5000), k = num(o.stock, 0, 9999); if (p !== null) e.price = p; if (k !== null) e.stock = k;
+    });
+    (ADMIN.newBooks || []).forEach(function (n) {
+      if (!GENRES[n.genre] || typeof n.title !== 'string' || DATA.books.some(function (b) { return b.id === n.id; })) return;
+      DATA.books.push({ id: String(n.id).replace(/[^a-z0-9-]/g, ''), title: n.title.slice(0, 120), author: String(n.author || '').slice(0, 80), year: num(n.year, 1500, 1955), genre: n.genre,
+        price: num(n.price, 1, 5000) || 50, saving: num(n.saving, 3, 10) || 5, stock: num(n.stock, 0, 9999) || 0, source: 'pd', blurb: String(n.blurb || '').slice(0, 400), rank: 60 });
+    });
+  }
+
   // ---------- campus essentials + student promotions ----------
   // A promotion runs on one item for anywhere from a day to a few weeks. The librarian will
   // schedule them in stage 4; until then the demo cycles through the sample list in books.json.
   var DAY = 86400000;
+  // All promotions running now; the shop features the one ending soonest.
+  function livePromos() {
+    if (ADMIN && ADMIN.promotions) { // scheduled by the librarian (admin demo, this browser)
+      var now = Date.now();
+      return ADMIN.promotions.filter(function (p) { return p.start <= now && now < p.end && essById(p.item); }).sort(function (a, b) { return a.end - b.end; })
+        .map(function (p) { return { item: essById(p.item), percent: Number(p.percent) || 0, days: Math.round((p.end - p.start) / DAY), ends: p.end }; });
+    }
+    var c = currentPromo(); return c ? [c] : [];
+  }
   function currentPromo() {
+    if (ADMIN && ADMIN.promotions) return livePromos()[0] || null;
     var P = DATA.promotions, start = Date.parse(P.epoch), total = 0;
     P.cycle.forEach(function (c) { total += c.days * DAY; });
     var into = (Date.now() - start) % total, t0 = Date.now() - into;
@@ -284,7 +318,7 @@
   function essById(id) { return DATA.essentials.filter(function (e) { return e.id === id; })[0]; }
   function promoPrice(e, pc) { return Math.round(e.price * (100 - pc) / 100); }
   function essCard(e) {
-    var pr = currentPromo(), on = pr && pr.item.id === e.id;
+    var pr = livePromos().filter(function (p) { return p.item.id === e.id; })[0], on = !!pr;
     var a = el('article', 'ess rv' + (on ? ' is-deal' : ''));
     var ph = el('div', 'ess-ph'); var img = el('img'); img.src = e.img; img.alt = e.name; img.loading = 'lazy'; img.decoding = 'async'; img.width = 720; img.height = 720; ph.appendChild(img);
     if (on) ph.appendChild(el('span', 'deal-tag', 'Student promo −' + pr.percent + '%'));
@@ -566,8 +600,8 @@
     var next = safeNext(params.get('next'));
     if (next && /^\/sign-in\//.test(next)) next = null;
     var d = DEMO[role];
-    flash((role === 'librarian' ? 'Signed in as the demo librarian.' : 'Signed in as ' + d.name + ' (' + d.label.toLowerCase() + ').') + (role === 'lecturer' ? ' The Faculty desk opens in stage 3.' : role === 'librarian' ? ' The dashboard opens in stage 4.' : ''));
-    location.href = next || (role === 'librarian' ? '/admin/' : '/');
+    flash((role === 'librarian' ? 'Signed in as the demo librarian.' : 'Signed in as ' + d.name + ' (' + d.label.toLowerCase() + ').') + (role === 'lecturer' ? ' The Faculty desk opens in stage 3.' : ''));
+    location.href = role === 'librarian' ? '/admin/dashboard/' : (next || '/');
   }
   function signin() {
     var main = document.getElementById('main'), roles = document.getElementById('roles');
@@ -607,10 +641,11 @@
     if (session) {
       var s = document.getElementById('signed'); s.hidden = false;
       s.appendChild(document.createTextNode(page === 'admin' && session.role === 'librarian'
-        ? 'You’re signed in as the demo librarian. The admin dashboard opens in stage 4. You can '
+        ? 'You’re signed in as the demo librarian. Go to the dashboard, or '
         : 'You’re signed in as ' + DEMO[session.role].name + '. Pick another demo account to switch, or '));
       var so = el('button', 'linkish', 'sign out'); so.type = 'button'; so.addEventListener('click', function () { clearSession(); flash('Signed out.'); location.href = '/sign-in/'; });
       s.appendChild(so); s.appendChild(document.createTextNode('.'));
+      if (page === 'admin' && session.role === 'librarian') { var go = el('a', 'btn accent', 'Open the dashboard →'); go.href = '/admin/dashboard/'; s.appendChild(el('br')); s.appendChild(go); go.style.marginTop = '10px'; }
     }
     if (roles) setRole(start); else clearErrors();
   }
@@ -661,6 +696,7 @@
   if (page === 'firsttime') firstTime();
   fetch('/data/books.json').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
     DATA = d; d.genres.forEach(function (g) { GENRES[g.id] = g; }); GENRES.text = GENRES.text || { name: 'Course textbooks' };
+    applyAdmin();
     if (page === 'home') home();
     if (page === 'browse') browse();
     if (page === 'search') search();

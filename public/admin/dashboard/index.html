@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Admin · GCTU Bookshop</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1f3b47">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/dm-sans-normal-latin-c57593e0.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/admin.css">
+<script src="/js/admin.js" defer></script>
+</head>
+<body class="adm">
+<a class="skip" href="#adm-main">Skip to content</a>
+<div class="adm-demo">Admin demo · sample data only · changes are saved in this browser until the database is connected</div>
+<div class="adm-shell">
+  <aside class="adm-side" aria-label="Admin">
+    <a class="adm-brand" href="#dashboard" aria-label="Admin dashboard">
+      <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="40" width="44" height="12" rx="3" fill="#ffffff"/><rect x="14" y="26" width="38" height="12" rx="3" fill="#8fb3bf"/><rect x="8" y="12" width="34" height="12" rx="3" fill="#e3ad35"/></svg>
+      <span><b>GCTU BOOKSHOP</b><i>Admin</i></span>
+    </a>
+    <nav class="adm-nav" id="adm-nav" aria-label="Admin sections">
+      <a href="#dashboard" data-v="dashboard">Dashboard</a>
+      <a href="#orders" data-v="orders">Orders <span class="n" id="n-orders"></span></a>
+      <a href="#books" data-v="books">Books &amp; stock</a>
+      <a href="#people" data-v="people">People</a>
+      <a href="#promotions" data-v="promotions">Promotions</a>
+      <a href="#requests" data-v="requests">Requests <span class="n" id="n-requests"></span></a>
+      <span class="adm-sep" aria-hidden="true"></span>
+      <a href="#settings" data-v="settings">Demo settings</a>
+      <a href="/" class="adm-out">View the shop ↗</a>
+    </nav>
+    <div class="adm-me"><span class="av">LB</span><span><b>The librarian</b>Demo account</span><button type="button" id="signout" class="adm-signout">Sign out</button></div>
+  </aside>
+  <main class="adm-main" id="adm-main" tabindex="-1"></main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
